@@ -80,6 +80,7 @@ Example 1:
     
     Explanation:
     LIS is [1,2,3]
+    
 If we want to find 3 LIS
 ----
 We need to find 2 LIS
@@ -1059,7 +1060,7 @@ Populating Next Right Pointers in Each Node
 
 
 
-Clone Graph
+**Clone Graph**
 Solution 1. DFS
 Map to record the node label and the node itself
 Then we recurse to find the node’s neighbors, for each neighbor, we 
