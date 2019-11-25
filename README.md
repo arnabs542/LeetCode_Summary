@@ -2725,6 +2725,7 @@ base case: target is empty
 所以我们需要一个maps array 和一个 HashMap memo, maps 的每一行是每一个word的字符频数， 那么我们的memo 存的是每一个可能的target 和对应的最小值，这样我们就可以剪枝了
 recursive case
 当我们构建好了maps 和 target 对应的字符和频数map之后，我们就可以将这个maps的每一行跟target对应的targetMap 进行比较，如果出现在targetMap 中的字符重复了，我们往一个String Builder 里加上这个字符， 加上多少次? 对应字符在targetMap 和map的重复值之差. 然后我们通过recursion 去找到这个StringBuilder 对应的字符串的所对应的出现次数来更新这个最小贴片数，
+
 **Stepping Numbers**
 这一题的思路就是backtrack 找到所有可能的stepping number 数字个数， 这里的stepping number的相邻digits 都差1， 
 第一根据例子我们可以发现这里的数字是不能重复选的，而且也不符合stepping number 的规范
@@ -2732,7 +2733,8 @@ recursive case
 
 `long inc = cur * 10 + last + 1;`
 `long dec = cur * 10 + last - 1;`
-然后我们可以根据`last` 来判断这回我们是要将 `inc` 还是 `dec` 作为我们的 `cur`
+然后我们可以根据`last` 来判断这回我们是要将 `inc` 还是 `dec` 作为我们的 `cur`  如果`last` 等于0 的话，那么就用`inc`, 如果等于9的话，就用`dec`, 如果是在0 到9的区间内，那么就先`dec` 后`inc` 
+
 ##2. 链表LinkedList题目小结
 这里我们需要将一些基本的类型转换搞明白， 比方说让自定义链表 去转换成数组，或者是数组转化成链表
 
