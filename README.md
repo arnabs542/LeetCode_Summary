@@ -2703,13 +2703,13 @@ Word Search
 先找到在board 有无这个word 的起始character， 作为起点，
 然后就在这个起点开始往四个方向开始扩张，每次扩张时只要越界/当前charater 不是word 当前的character，就直接返回false， 这里回溯的结果是只要一个方向能候
 够走到末尾就返回一个true
-Word search II
+**Word search II**
 这里的区别是现在我们要找出所有不重复的单词，而且输入不再只有一个，现在有一个单词想向量。这里就是可以有个笨方法就是说根据我上一题的说明这个单词是存在在这个矩阵的，那么就加这个单词到我的这个HashSet 中，最后放回这个Set转化成list的形式
-Palindrome Partitioning with no duplicates
+**Palindrome Partitioning with no duplicates**
 对字符进行一个预处理，也就是当出现奇数的次数超出1的话，就不可能出现
 这里map 可以直接用一个256的一个数组来表示，统计完出现次数之后就可以将那些出现奇数次的character 放到一个String 里面用来表示中间的字符串是什么。
 然后我们可以去做back tracking base case是当我们的cur String 达到了给的String 的长度那么，我们就可以返回这个答案，否则遍历map上所有的index，当这个index大于0的的时候，我们减去2 个occurance，因为我们要的cur String 是 “(char)i + temp + (char)i” 这里i 要加在前面和后面；所以在后面的回溯当中我们要把这个occurance 加回2
-Stickers to Spell Word
+**Stickers to Spell Word**
 这道题给了我们N个贴片，每个贴片上有一个小写字母的单词，给了我们一个目标单词target，让我们通过剪下贴片单词上的字母来拼出目标值，每个贴片都有无数个，问我们最少用几个贴片能拼出目标值target，如果不能拼出来的话，就返回-1
 这里可以用DP的多重背包来做，或者是用记忆化搜索来做，这里我们先将记忆化搜索的方法
 有点像 找到 minimum combination sum that sum up to a target with result 的题目
@@ -2725,15 +2725,15 @@ base case: target is empty
 所以我们需要一个maps array 和一个 HashMap memo, maps 的每一行是每一个word的字符频数， 那么我们的memo 存的是每一个可能的target 和对应的最小值，这样我们就可以剪枝了
 recursive case
 当我们构建好了maps 和 target 对应的字符和频数map之后，我们就可以将这个maps的每一行跟target对应的targetMap 进行比较，如果出现在targetMap 中的字符重复了，我们往一个String Builder 里加上这个字符， 加上多少次? 对应字符在targetMap 和map的重复值之差. 然后我们通过recursion 去找到这个StringBuilder 对应的字符串的所对应的出现次数来更新这个最小贴片数，
-Stepping Numbers
+**Stepping Numbers**
 这一题的思路就是backtrack 找到所有可能的stepping number 数字个数， 这里的stepping number的相邻digits 都差1， 
 第一根据例子我们可以发现这里的数字是不能重复选的，而且也不符合stepping number 的规范
 第二我们发现这个里的思路跟  subsets II 很像， 也是找到不同的子集但不能重复选择数字，我们先要找到每个数的最后一位然后根据这个算出对应的多一个或者小一个
 
-long inc = cur * 10 + last + 1;
-long dec = cur * 10 + last - 1;
-
-2. 链表LinkedList题目小结
+`long inc = cur * 10 + last + 1;`
+`long dec = cur * 10 + last - 1;`
+然后我们可以根据`last` 来判断这回我们是要将 `inc` 还是 `dec` 作为我们的 `cur`
+##2. 链表LinkedList题目小结
 这里我们需要将一些基本的类型转换搞明白， 比方说让自定义链表 去转换成数组，或者是数组转化成链表
 
 
