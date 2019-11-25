@@ -50,7 +50,7 @@ Root对应---x, 那么直接返回x，因为是father 节点
 更新fathers map 让x的value变成root，然后更新x为自己的更新前的father 节点
 
 
-114 Unique Path
+**114 Unique Path**
 
 M = 3 N = 3
 
@@ -72,7 +72,7 @@ Transit dp[i][j] = previous up and previous right = dp[i - 1][j] + dp[i][j - 1]
 Init: dp[i][0] = 1 dp [0][j] = 1
 
 
-76 Longest Increasing Subsequence --- Very Classic and Extensive to other DP problem
+**76 Longest Increasing Subsequence --- Very Classic and Extensive to other DP problem**
 
 Example 1:
     Input:  [5,4,1,2,3]
@@ -101,7 +101,7 @@ O(nlogn) use Binary Search
 
 
 
-N-Queens
+**N-Queens**
 
 . Q . . .
 
@@ -124,7 +124,7 @@ Would be gonna be, each time for the successful next move
 i t would be three set doesn’t have the coordinate.
 
 
-802 Sudoku Problem
+**802 Sudoku Problem**
 
 Solution: brute-force, nested for loops, each block would have 9 possible 
 Numbers to pick, each cell has to check if previous has been selected
@@ -145,7 +145,7 @@ Recursion method
 
 
 
-623 K Edit Distances 
+**623 K Edit Distances**
 
 [“abc”, “abd”, “abcd”, “abc”]
 
@@ -160,14 +160,14 @@ Target can be reached or not
 
 For search the word in the words, use Trie to realize since Trie is used to find the string and match the prefix
 
-406 Minimum size subarray sum
+**406 Minimum size subarray sum**
 
 [2,3,1,2,4,3], s = 7
 Ans: 2 since [4, 3] has the sum equals to 7
 
 Two pointers
 
-
+`inc` 
 2   3   1   2   4   3 
 ^
 l,r
@@ -218,7 +218,7 @@ A[i] + a[i +1] + ...  + a[j] = S[j] - S[i - 1]
 Check if (Sj - Si - 1) greater than S
 
 
-384 Longest Substring without Repeating Characters
+**384 Longest Substring without Repeating Characters**
 
 A   b   b   a   c
 ^   
@@ -267,7 +267,7 @@ For (left pointer, right pointer; right pointer < length; right pointer++) {
 }
 
 Two Pointers Template 3
-32 Minimum window Substring
+**32 Minimum window Substring**
 
 source : abczdedf target: acdd
 
@@ -327,7 +327,7 @@ At the end all courses are sorted according to their prerequisites
 
 
 
-613 High Five
+**613 High Five**
 [[1,91],[1,92],[2,93],[2,99],[2,98],[2,97],[1,60],[1,58],[2,100],[1,61]]
 Id: 1 Highest five scores: 92 91 61 60 58
 Id: 2 Highest five scores: 100 99 98 93 92 
@@ -335,7 +335,7 @@ Id: 2 Highest five scores: 100 99 98 93 92
 For Heap, if the heap.size() < 5 add the item, check if the top of the heap is smaller than the next score, if yes then poll that top of the heap and add the new score
 
 
-612 K closest points
+**612 K closest points**
 Given some points and origin, find k points which are nearest to the origin, return the points sorted by distance
 
 
@@ -354,7 +354,7 @@ Everytime update the answer with the queue poll
 
 A(0,0) -> B(1,0) -> C(2,0) -> C(2, 1) -> E(2,2) -> D(1,2)
 
-**DFS in the matrix**
+## DFS in the matrix
 When you see the grid character is matched with the word’s first character
 For each char in the String, perform the dfs in the grid, need to search the grid for the four directions i - 1, i + 1, j - 1, j + 1
 
@@ -366,7 +366,7 @@ And set the board[i][j] = temp back for back tracking
 
 
 
-388 Permutation Sequence
+**388 Permutation Sequence**
 
 Given n and k, find kth permutations of the dictionary order in full permutation of n
 
@@ -1945,7 +1945,7 @@ I want you to output all sequence in List<List<String>>
 ID A* search
 Add a surrounding around the DFS
 The outer ring would cost the most but it is ok
-二分查找/搜索小结
+## 二分查找/搜索小结
 二分法有4种写法，然后三个迭代写法，一个递归写法，
 然后二分法一般用于一维数组，但是也可以用在二维数组的查找
 
@@ -1953,12 +1953,12 @@ The outer ring would cost the most but it is ok
 这里有个小技巧： 如何通过一维转二维？答案如下
 
 
-240 Search a 2D matrix II
+**240 Search a 2D matrix II**
 思路就是二分，但是要按照行和列来分别进行 这里可以设置一个flag表示是行还是列，然后根据这个去进行查找
 
 
-排序/Sort小结
-148 Sort List
+## 排序/Sort小结
+**148 Sort List**
 这里是比较经典的merge sort 的应用，这里的merge 和sort 是分开走的，因为这里链表是单向的，所以我们首先要考虑将一个链表一分为二, 如何办到?
 这里的标准就是我们将慢指针为头结点，快指针也为头结点，然后每次快指针走两步，慢指针走一步，还有就是有一个pre 指针，每次指向慢指针，最后当快指针到链表尾部的时候，pre 的下一个节点指向null, 这样就可以分开成两个sublist {head, slow} 和 {slow, fast}. 这里的两个sublist
 通过recursion 来sort，base case 是什么？ 这里的base case 是当head 为null 时，返回head，或者head.next 为空时，返回head、
@@ -1969,7 +1969,7 @@ Sort 完之后，我们就来merge linked list
 递归如下
 
 
-369 Plus One Linked List
+**369 Plus One Linked List**
  Plus One 
         think of it like slow and fast runners
         
@@ -1990,24 +1990,25 @@ because we need to check if the linked list needs a extra cell when encounter 9-
 如何按照字典序排序呢？
 
  
-数学题小结
-7 reverse number
+## 数学题小结
+**7 reverse number**
 扩大处理, res 用long表示，然后只要越界，就返回0
 每次更新res是用res = res * 10 + num % 10 , num /= 10 
 比较处理
 比较与原来的值和新的值，利用最大值加一些值变负数，如果新的值除以10不等于旧值，那么就返回0
 
-plus one 加减乘除
+**plus one 加减乘除**
 这里考虑进位的问题，如果是小于9的话，正常进位并返回res，否则就将该位数字改为0，
 最后如过整个for loop都结束的话，那么就需要开一个新数组，然后新数组数字多一，然后数组头设1，最后返回
 String to Integer (atoi) 转换
 首先将str预处理把所有空格全部拿走，然后将第一个char 拿出来看正负，然后定义第一个数字的位置为符号的后面以为，然后开始进行for loop，每次res = res * 10 + str.char(i) - ‘0’, 最先加进来的数字一定是最大的那一位，其中判断数字是否越界，这里用sign和res来判断，res实现要做一个扩大处理，最后返回int型res * sign
-367 Valid perfect square 开方
+
+**367 Valid perfect square 开方**
 三种解法， 1.二分法， 必须要会， 2. x * x > num 时间比二分法少一点 3. 牛顿法，非常难以解释，一般除非面试官特别要求，不需要写这个解法
 67 Add Binary 加减乘除, 进位
 这里用到的思想就是两个指针分别从两个字符串最后往前遍历，然后有一个sum 去加在ASCII 码的每个数字， 然后还有一个carry 去代表进位，结果中的每一位是sum % 2 得到，然后每次sum 在未进过任何加数之前是要等于carry，因为从上次计算得到的进位要算在里面，每次carry 更新carry = sum / 2。 最后出来时判断carry 是否还有剩下，如果有就将carry append 到结果中，最后返回reverse的结果
 
-258 Add Digits
+**258 Add Digits**
 我们可以先看下例子
 267 = 2 + 6 + 7 = 15 > 10 
 15 = 1 + 5 = 6 < 10 → 输出6
@@ -2020,18 +2021,20 @@ String to Integer (atoi) 转换
  
 
 
-位运算小结
-136 Single Number 
+## 位运算小结
+**136 Single Number**
 
-389 Find the Difference
+**389 Find the Difference**
 利用 XOR 异或 的性质去更新更长的string 的最后一个character,最后返回
-268 Missing number
+**268 Missing number**
 
-231 Power of two 
+**231 Power of two**
 用n & (n - 1) == 0 判断是否是2的整数次幂
-191 Number of 1 bits
+
+**191 Number of 1 bits**
 这里要统计unsigned integer 的1的个数，也就是要用到 n & 1 来末尾取一，同时更新答案，然后返回res，每次更新数字往右移一位
-318 Maximum product of two strings
+
+**318 Maximum product of two strings**
 一开始想我们遍历每一个单词，然后让每一个单词和下一个单词进行一个单词比较，这里比较的是两个单词是否是unique的，当每一个单词不是unique的那么就不更新答案， 如果是unique 的就更新答案
 关键在如何判断这两个单词是unique的，一个最navie的solution就是将这两个单词其中一个每一个 character判断位置是否为-1，-1就是说明这个character不在另一个单词里，如果不为-1，那么这个character 在这个character里，就返回负数
 We first intitialize result to 0. We then iterate from
@@ -2105,9 +2108,7 @@ ToDO
 Sqrt(x)
 用二分的方法
 
-Remove Duplicates 双指针模板总结
-
-双指针 Sliding Window模板总结
+## 双指针 Sliding Window模板总结
 题目概览
 滑动窗口这类问题一般需要用到双指针来进行求解，另外一类比较特殊则是需要用到特定的数据结构，像是 sorted_map。后者有特定的题型，后面会列出来，但是，对于前者，题形变化非常的大，一般都是基于字符串和数组的，所以我们重点总结这种基于双指针的滑动窗口问题。
 
@@ -2134,8 +2135,61 @@ Remove Duplicates 双指针模板总结
 要检查一个window是否合适，我们用一个map去存(char, count) 对每一个
 
 具体的代码模板如下
+
+```
+public int slidingWindowTemplate(String[] A, ...) {
+ // 输入参数有效性
+ if (...) {
+  ...
+ }
+ 
+ // 申请一个散列，用于记录窗口具体元素的个数情况
+ // 这里用 数组的形式呈现，可以考虑其他数据结构
+ int[] hash = new int[...];
+ 
+ // left 表示指针
+ // count 记录当前的条件，具体按题目要求
+ // res 存结果
+ 
+ int l = 0, count = ..., result = ...;
+ for (int r = 0; r < A.length; r++) {
+  // 更新元素在散列中的数量
+  hash[A[r]--];
+  
+  // 根据窗口的变更结果来改变条件值
+  if (hash[A[r]] == (...)) {
+   count++;
+  }
+  
+  // 如果当前条件不满足，移动左指针直到条件满足为止
+  while (count > K || ...) {
+  
+   ...
+   if (...) {
+    count--;
+   }
+   hash[A[l]]++;
+   l++;
+  }
+  
+  //  更新结果
+  res = ...
+  
+ }
+ 
+ return res;
+}
+
+```
+
+
 具体的题目例子
-239 Sliding Window Maximum
+
+
+
+**239 Sliding Window Maximum**
+
+
 最原始的双指针，O(Nk - 1)
 PriorityQueue 放入进去， O(NlogK - 1)
 deque 的写法
@@ -2151,18 +2205,18 @@ deque 的写法
 
 
 
-992. Subarrays with K Different Integers
+**992. Subarrays with K Different Integers**
 
-76 Minimum window substring
+**76 Minimum window substring**
 模板题
 
-209 Minimum Size Subarray sum
+**209 Minimum Size Subarray sum**
 according to the template, we can set up two pointers, l and r, two are moving in the same directions, and when the right is moving along the array, the sum must add the number where r points to (prefix sum), and once the sum is greater than the s, that means after the r, the sum would always be greater than the s, assuming all the number is positive in the array.
 So the algorithm will be marked down as
 1 move the right pointer and add the number, where the right pointer is pointing, to the sum.
 2 once the number is greater than the s, meaning, the window is valid, then we need to update our res with the window between right pointer and left pointer. To shrink the window down until we can find a minimized size window, always decrease the number where the left pointer is pointing to
 
-340 Longest Substring with At Most K Distinct Characters
+**340 Longest Substring with At Most K Distinct Characters**
 we still need to declare two pointers, left and right,
 move the right pointer and see the window has the at most K distinct characters
 then we have a maxLen defined initially as Integer.MIN_VALUE, and counter at 0,
@@ -2735,7 +2789,7 @@ recursive case
 `long dec = cur * 10 + last - 1;`
 然后我们可以根据`last` 来判断这回我们是要将 `inc` 还是 `dec` 作为我们的 `cur`  如果`last` 等于0 的话，那么就用`inc`, 如果等于9的话，就用`dec`, 如果是在0 到9的区间内，那么就先`dec` 后`inc` 
 
-##2. 链表LinkedList题目小结
+## 2. 链表LinkedList题目小结
 这里我们需要将一些基本的类型转换搞明白， 比方说让自定义链表 去转换成数组，或者是数组转化成链表
 
 
