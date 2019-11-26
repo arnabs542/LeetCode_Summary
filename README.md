@@ -2281,6 +2281,14 @@ ans =2 exit since t = target.length()
  **reverse vowels**
  这里我们可以用 左右指针往中间走， 当左指针没有包含vowels， 左指针往右走，右指针也是这样， 往左走，这里直到找到了两个vowel，然后将这两个交换
  
+ **Longest Repeating Character Replacement**
+ 这里是 滑动窗口的方法，那么这里的滑动窗口怎么去想？ 如何去找得到这个窗口的大小和答案之间的关系？ 根据一个例子来想比较好, 比方说
+ ```
+ "AABABCC" k = 2
+ l = 0, r = 4 inclusive
+ ```
+ 这里我们需要算出咱们要replace 的letter 个数是多少，那么再算这个之前我们需要知道两个东西，一个是窗口的大小，`window_size = r - l + 1`，一个是最多出现的character， `maxFreqChar`, 怎么知道当前的`maxFreqChar`? 我们可以用一个Hashmap 或者就一个26个数组就好，(因为这里我们是只有26个大写字母) 那么我们怎么判断这里的window是invalid的？只有当我们这个replace letter的个数比k要大，那么我们需要移动我们的左指针，并且需要 减少我们的`maxFreqChar` 和 map 里面左指针指向的character
+ 
 二维数组4种交换方式 总结
 
 
