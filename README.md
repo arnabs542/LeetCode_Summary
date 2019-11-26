@@ -2275,6 +2275,8 @@ ans =2 exit since t = target.length()
  **3Sum Smaller**
  这里可以将`2Sum smaller`的思想imply 到这里，我们可以有一个`i` 指针从0到`nums.length - 2` 一直遍历，每次`left = i + 1, r = nums.length - 1` 可以用这三个指针表示当前的和，然后用这个当前的和去和`target` 比较，如果是小于`target`，那么这里的答案可以更新为`ans += r - l` 因为这里是一个窗口来走，同时可以更新`left` 指针， 反之更新`right` 指针
  
+ **Move Zeros**
+ 这里我们用一个 `index` 来记录所有非零的元素，然后我的所有非零的元素就是放到`nums[index]` 的位置上来，最后我们从 `index` 到 `nums.length - 1` 全是0
  
  
 二维数组4种交换方式 总结
