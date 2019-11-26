@@ -2278,6 +2278,8 @@ ans =2 exit since t = target.length()
  **Move Zeros**
  这里我们用一个 `index` 来记录所有非零的元素，然后我的所有非零的元素就是放到`nums[index]` 的位置上来，最后我们从 `index` 到 `nums.length - 1` 全是0
  
+ **reverse vowels**
+ 这里我们可以用 左右指针往中间走， 当左指针没有包含vowels， 左指针往右走，右指针也是这样， 往左走，这里直到找到了两个vowel，然后将这两个交换
  
 二维数组4种交换方式 总结
 
