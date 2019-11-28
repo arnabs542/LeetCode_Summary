@@ -2370,6 +2370,91 @@ ans =2 exit since t = target.length()
  
  ```
  
+ **Max Consecutive Ones II**
+给定一个 01 数组， 题目要求找flip 一个0能发现的最多连续1的数组长度，我一开始是按题目意思做，定位到0的index上，然后向左右两边拓展找到连续1的数字这里我们需要将一个edge case单独拿出来处理，如果我们给定的数组里面没有0，也就是说我们的连续1的个数就是数组的长度。 代码如下
+```
+    public int findMaxConsecutiveOnes(int[] nums) {
+        // null check 
+        if (nums == null || nums.length == 0) return -1;
+        
+        if (nums.length == 1 && nums[0] == 1) return 1;
+        
+        int count = 0;
+        
+        for (int i = 0; i < nums.length; i++) {
+            int preSum = 0;
+            if (nums[i] == 0) {
+                preSum = collect(nums, i);
+            }
+            
+            count = Math.max(count, preSum);
+        }
+        
+        // if not contains any 0 
+        // preSum is 0, then we need to traverse the whole array
+        
+        
+        return count == 0 ? nums.length : count;
+    }
+    
+    private int collect(int[] nums, int i) {
+        int res = 1;
+        
+        int l = i, r = i;
+        
+        for (l = i; l >= 0; l--) {
+            if (nums[l] == 1) {
+                res++;
+            }
+            if (l < i && nums[l] == 0) {
+                break;
+            }
+        }
+        
+        for (r = i; r < nums.length; r++) {
+            if (nums[r] == 1) {
+                res++;
+            }
+            
+            if (r > i && nums[r] == 0) {
+                break;
+            }
+        }
+        
+        return res;
+    }
+```
+ 但还有一个更好的方法去解决这个问题，也就是运用 sliding window 的技巧，我们有左右两个指针，当我们的右指针指向的数字是0的时候，我们增加我们的count；当我们的count 大于1了，说明我们有多一个0作为我们的终点，这里我们发现只有将第一个0删去，然后维护这个count，使其保持1的状态就好；然后我们的长度就是这个窗口的长度 也就是  `r - l + 1`; 还有就是说这里的edge 是没有的，因为我们只要将这个右指针不停往右走，虽然数组没有0，但是最后返回的一定是整个窗口的长度； 时间复杂度O（n） 空间 O（1）
+ ```
+     public int findMaxConsecutiveOnes(int[] nums) {
+        int count = 0;
+        int l = 0, r = 0;
+        
+        int len = nums.length;
+        int ans = 0;
+        while (r < len) {
+            if (nums[r] == 0) {
+                count++;
+            }
+            
+            // remove first zero encounted if count is bigger than 0
+            if (count > 1) {
+                if (nums[l] == 0) {
+                    count--;
+                }
+                l++;
+            }
+            // find the maximum window size
+            ans = Math.max(ans, r - l + 1);
+            
+            
+            // move the right point
+            r++;
+        }
+        
+        return ans;
+    }
+ ```
  
  
  
