@@ -2600,11 +2600,46 @@ key 存的是nums[i]， value 存的是出现的次数
     }
  ```
  
+ **Consecutive K Sum**
+ 这里给定一个数组`nums` 和`K`要找到连续K个最大和
+ 这里用了一个Sliding Window 的技巧， 这个技巧是将这个nested for loop 变成单个for loop来做，这个sliding window 有一样大小或者是不同大小；这题是要求Slinding window 是不变的，就是K。我们可以先求出前K个元素的和，然后我们从`K`个元素开始，这里我们呢每次减去前一个窗口的第一个元素`nums[i - k]`，再加上下一个窗口的第一个元素 `nums[i]`，以此类推，时间复杂度是O(n)
+ ```
+ [1    2     3   4  5]
+  i - k      k(i)
+  
+  public int maxKSum(int[] arr, int k) {
+        //NULL Check
+        if (arr == null || arr.length == 0 || k <= 0) return 0;
+
+        int sum = 0;
+        int preSum = 0;
+        // calculate the sum for first k-th elements
+        for (int i = 0; i < k; i++) {
+            preSum += arr[i];
+        }
+
+        // from k-th element we slide our window (window size is fixed at k)
+        // [1  2    3  4  5] k = 2
+        //  ^  ^
+        //  (i - k) k,i
+
+        for (int i = k; i < arr.length; i++) {
+            preSum -= arr[i - k];
+            preSum += arr[i];
+            sum = Math.max(sum, preSum);
+        }
+
+        return sum;
+    }
+  
+ ```
+ 
+ 
 二维数组4种交换方式 总结
 
 
  
-Backtrack (通用解法) 基础 总结
+## Backtrack (通用解法) 基础 总结
 对于字符串的Backtrack (通用解法) 的套路总结
 每次看到字符串的Backtrack 时，首先要想到的是这个题目需要我们做什么，是需要我们排列，组合，还是其他？然后我们得去思考什么参数是需要的，而在
 这里一般我们需要一个Temporal String或者StringBuilder 来改变我们递归时放入的String的格式，
