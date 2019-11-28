@@ -2289,6 +2289,90 @@ ans =2 exit since t = target.length()
  ```
  这里我们需要算出咱们要replace 的letter 个数是多少，那么再算这个之前我们需要知道两个东西，一个是窗口的大小，`window_size = r - l + 1`，一个是最多出现的character， `maxFreqChar`, 怎么知道当前的`maxFreqChar`? 我们可以用一个Hashmap 或者就一个26个数组就好，(因为这里我们是只有26个大写字母) 那么我们怎么判断这里的window是invalid的？只有当我们这个replace letter的个数比k要大，那么我们需要移动我们的左指针，并且需要 减少我们的`maxFreqChar` 和 map 里面左指针指向的character
  
+ **Circular Array Loop**
+ 
+ 这里跟`linkedlist cycle` 有点像，就运用快慢指针来判断这个数组有没有环，这里`slow` 指的是i,  `fast`指的是比`slow`多经过一次iteration的指针，这里的首先会有遍历每一个数字，然后我们要去判断方向是否是同一个方向，也就是当移动了 `fast` 和 `forward(fast)`步之后是否同号，也就是 `while nums[fast] * nums[i] > 0 && nums[i] * nums[forward(fast, nums)] > 0` 在这个while 循环中我们才可以去判断快慢指针是否相遇，然后相遇后我们还要去判断一个edge case: 也就是当只有一个元素在数组里的时候，我们要break，然后才能返回正确，
+ 
+ 之后我们最后要再遍历一次数组，然后把遇到过元素设成0, 这里这样做的好处是我们遇到过不能走的就直接设成 0 步好了
+ 
+ ```
+ public class Solution {
+    int len;
+    /**
+     * Moves the pointer 'i' ahead one iteration.
+     */
+    private int advance(int[] nums, int i) {
+        i += nums[i];
+        if (i < 0) i += len;
+        else if (i > len - 1) i %= len;
+        return i;
+    }
+    
+    public boolean circularArrayLoop(int[] nums) {
+        // Handle bad input
+        if (nums == null || nums.length < 2) return false;
+        
+        len = nums.length;
+        
+        /**
+         * Check every possible start location.
+         * We may start at a short-loop, for instance, but the Array
+         * may still contain a valid loop.
+         */
+        for (int i = 0; i < len; i++) {
+            /**
+             * We set elements to 0 which are on known non-loop paths.
+             * So, if we encounter a 0, we know we're not on a loop path.
+             * So, move to the next start location in the list.
+             */
+            if (nums[i] == 0) continue;
+            
+            // Stagger our starts, so we don't conclude we've found a loop,
+            // as we might otherwise when slow == fast.
+            int slow = i, fast = advance(nums, slow);
+            
+            /** 
+             * Whether i is positive or negative defines our direction, so if
+             * the directions differ, so too will the signs.
+             * If the signs differ, we can't be in a 'forward' or a 'backward'
+             * loop, so we exit the traverse.
+             */
+            while (nums[i] * nums[fast] > 0 &&
+                    nums[i] * nums[advance(nums, fast)] > 0) {
+                if (slow == fast) {
+                    if (slow == advance(nums, slow)) break; // 1-element loop
+                    return true;
+                }
+                slow = advance(nums, slow);
+                fast = advance(nums, advance(nums, fast));
+            }
+            
+            /**
+             * If we're here, we didn't find a loop, so we know this path
+             * doesn't have a loop, so we re-traverse it until we reverse
+             * direction or encounter a '0' element.
+             * During the re-traverse, we set each element we see to 0.
+             */
+            slow = i;
+            int sgn = nums[i];
+            while (sgn * nums[slow] > 0) {
+                int tmp = advance(nums, slow);
+                nums[slow] = 0;
+                slow = tmp;
+            }
+        }
+        
+        // We've tested the whole array and have not found a loop,
+        // therefore there isn't one, so return false.
+        return false;
+    }
+}
+ 
+ ```
+ 
+ 
+ 
+ 
 二维数组4种交换方式 总结
 
 
