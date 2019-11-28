@@ -2456,7 +2456,71 @@ ans =2 exit since t = target.length()
     }
  ```
  
+ **Longest Word in Dictionary through Deleting**
  
+ 题目给定了一个字符串`s`和一个字典`d`，要找到字典里面最长的通过删减给定字符串字符这里我一开始用的是brute force 的方法，但是这会TLE，方法就是每次选或者不选，找到这个给定字符串的所有子集之后进行一个判断；
+ 
+ ```
+     private void generate(String s, String cur, int i, List<String> list) {
+        if (i == s.length()) {
+            list.add(cur);
+            return;
+        } else {
+            generate(s, cur + s.charAt(i), i + 1, list);
+            generate(s, cur, i + 1, list);
+        }
+        
+    }
+    
+    public String findLongestWord(String s, List<String> d) {
+        
+        // brute force
+        // generate all the possible combinations of s by adding or removing i-th element from the String s
+        // and check the match and the lexicographical order
+        List<String> list = new ArrayList<>();
+        Set<String> set = new HashSet<>(d);
+        
+        generate(s, "", 0, list);
+        String maxStr = "";
+        
+        for (String item : list) {
+            if (set.contains(item)) {
+                if (item.length() > maxStr.length() || (item.length() == maxStr.length() && item.compareTo(maxStr) < 0)) {
+                    maxStr = item;
+                }
+            }
+        }
+        
+        return maxStr;
+    }
+ ```
+ 
+ 
+ 第二个想法是可以先对字典进行从大到小的排序，每个单词进行长度的对比；如果长度一样的那就按照字典顺序进行排序；然后用一个指针`j`去记录`d`中当前遍历到的单词的字符与给定字符串`s`的字符一样的, 这个能过，但是只打败了23%个老哥老姐
+ ```
+     public String findLongestWord(String s, List<String> d) {
+        Collections.sort(d, (a, b) -> (a.length() == b.length() ? a.compareTo(b) : b.length() - a.length()));
+        
+        for (String word : d) {
+            if (isSubsequence(word, s)) {
+                return word;
+            }
+        }
+        
+        return "";
+    }
+    
+    private boolean isSubsequence(String x, String y) {
+        int j = 0;
+        for (int i = 0; i < y.length() && j < x.length(); i++) {
+            if (y.charAt(i) == x.charAt(j)) {
+                j++;
+            }
+        }
+        
+        return j == x.length();
+    }
+ ```
  
 二维数组4种交换方式 总结
 
