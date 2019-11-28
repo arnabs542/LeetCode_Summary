@@ -2521,6 +2521,60 @@ ans =2 exit since t = target.length()
         return j == x.length();
     }
  ```
+ **K-diff Pairs in Array**
+ 这里找到k-difference pairs 这里 k-difference 的定义是差的绝对值， 我们先要将这个数组排序，这里我们的可以用一个HashMap 来记录所有达标的`Unique pairs` 最后返回这个HashMap的size就可以
+ ```
+     public int findPairs(int[] nums, int k) {
+        int count = 0;
+        Map<List<Integer>, Integer> map = new HashMap<>();
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i + 1; j < nums.length; j++) {
+                if (Math.abs(nums[i] - nums[j]) == k) {
+                    List<Integer> list = new ArrayList<>();
+                    list.add(nums[i]);
+                    list.add(nums[j]);
+                    map.put(list, 1);
+                }
+            }
+        }
+        
+        return map.size();
+    }
+ ```
+ 
+这个方法虽然能够通过，但是不能很有效；所以我们需要用HashMap的方法去做
+key 存的是nums[i]， value 存的是出现的次数
+我们每次拿出来{key, value} 对，通过`Map.Entry<Integer, Integer> x = map.entrySet()`的方式
+主要处理k== 0 的情况，这种情况判断entry 里面出现次数大于2的数子，
+否则 如果map 中有entry.getKey() + k的数字，那么就增加res
+
+```
+    public int findPairs(int[] nums, int k) {
+        if (nums == null || nums.length == 0 || k < 0) return 0;
+        
+        int count = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
+        }
+        
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (k == 0) {
+                if (entry.getValue() >= 2) {
+                    count++;
+                }
+            } else {
+                if (map.containsKey(entry.getKey() + k)) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    } 
+```
+ 
  
 二维数组4种交换方式 总结
 
