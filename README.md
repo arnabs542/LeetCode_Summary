@@ -2653,7 +2653,31 @@ key 存的是nums[i]， value 存的是出现的次数
     }
   
  ```
- 
+ **Summary Ranges**
+ 这里给定一个排好序且没有重复数字的数组，我们去输出一个Range Array来表示连续数的range,`number1->number2`。那么这里怎么去想呢？还是滑动窗口的思路，也就是说"右指针一直走，左端点不回头"，这里右指针的一直移动，然后我们去判断右指针是否跟之后的值是相差1的。如果条件符合，我们就直接continue，也就是不停移动右指针，然后我们再去判断这里的左指针是否和右指针相同，这是为什么？因为如果不是一个连续的子数组，右指针是没有移动的，也就是说和左指针重合
+ 否则我们就按照`number1->number2`形式来加
+ ```
+     public List<String> summaryRanges(int[] nums) {
+        List<String> res = new ArrayList<>();
+        int  l = 0;
+        for (int r = 0; r < nums.length; r++) {
+           
+            
+            if (r + 1 < nums.length && nums[r] == nums[r + 1] - 1) {
+                continue;
+            }
+            
+            if (l == r) {
+                res.add(nums[l] + "");
+            } else {
+                res.add(nums[l] + "->" + nums[r]);
+            }
+            l = r + 1;
+        }
+        
+        return res;
+    }
+ ```
  
 二维数组4种交换方式 总结
 
@@ -4042,7 +4066,6 @@ the essence of this problem is to every time make choices splitting the given in
 区间小结 
 Missing Ranges 
 Merge Ranges 
-Summary Ranges
 Insert Interval
 
 
