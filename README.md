@@ -2679,6 +2679,53 @@ key 存的是nums[i]， value 存的是出现的次数
     }
  ```
  
+ **Missing Ranges**`number1->number2`
+ 这里给了一个数组和一个`lower`和一个`upper`分别表示上下边界，要输出一个Range array 去cover 所有元素之间的 missing的range, 同样以`number1->number2`的形式输出，这里我们已经有左右边界了，也就是我们要分三种情况讨论：
+ 1. 如果`lower`边界比`nums[0]`要小，我们就将`lower->nums[0] - 1`输入进入答案里面
+ 2. 如果元素之间的差比1要大，那么这里需要加入的是`nums[i] + 1->nums[i + 1] - 1`输入到答案里
+ 3. 如果`nums[nums.length - 1]`比`upper`要小，那么需要加入的是`nums[nums.length - 1] + 1->upper`输入到答案里
+ 所有的输入操作都是由`getRange()`函数产生
+  这里需要注意的坑是，test case里面有`Integer.MAX_VALUE`和`Integer.MIN_VALUE`在情况二里我们需要将这个差值转化成一个long型数字，以及所有的`getRange` 里面都需要将`int`转换成`long`这样才能避免Integer overflow 的问题
+  
+  ```
+      public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        List<String> res = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            res.add(getRange(lower, upper));
+            return res;
+        }
+        
+        if (lower < nums[0]) {
+            res.add(getRange(lower, nums[0] - 1));
+        }
+        
+        for (int i = 0; i < nums.length - 1; i++) {
+            // Integer overflow so use long
+            long delta = (long)nums[i + 1] - nums[i];
+            if (delta > 1) {
+                res.add(getRange(nums[i] + 1, nums[i + 1] - 1));
+            }
+        }
+        
+        if (nums[nums.length - 1] < upper) {
+            res.add(getRange(nums[nums.length - 1] + 1, upper));
+        }
+        
+        return res;
+    }
+    
+    private String getRange(int x, int y) {
+        
+        if (x == y) {
+            return Long.toString(x);
+        } else if (y > x) {
+            return Long.toString(x) + "->" + Long.toString(y);
+        }
+        
+        return "";
+    }
+  ```
+ 
 二维数组4种交换方式 总结
 
 
