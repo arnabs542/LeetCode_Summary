@@ -2903,6 +2903,36 @@ Target:     a     c     d     d
         return res;
     }
  ```
+ **Array Nesting**
+ 这里是第一个实现题。从开始我们有一个`next`指针，表示下一个数字的index是什么，我们遍历数组的时候，`next`设成是i,然后开始去找数组环，这里需要用到一个小技巧，也就是凡是我们看到过的数字，我们都将其设成-1，这样如果我们遇到-1时我们就知道这里的数字是已经经过一次了，我们就可以去更新这个环的长度，从而去找最大环的长度，还有一个点需要注意的是在设这个数字为-1的时候，我们需要一个`temp`指针去保存上一次的`next`指针，也就是我们visited 过的数字index, 然后将我们的`next`指针移动到`nums[next]`中去，最后才设`nums[temp] = -1`因为如果在移动`next`之前设成了这个-1的话，我们实际是将这下一个要去的点设成了-1.那这就导致了`next = nums[next] = -1` 这样是错误的，所以顺序一定要搞对，代码如下
+ 
+```
+    public int arrayNesting(int[] nums) {
+        if (nums == null || nums.length == 0) return -1;
+        int firstIndex = nums[0];
+        
+        int res = 0;
+        
+        for (int i = 0; i < nums.length; i++) {
+            int next = i;
+            int count = 0;
+            // 遇见到的数字就变成-1
+            while (nums[next] != -1) {
+                count++;
+                // temp 存的是上一个，也就是已经visited 过的数字的index
+                int temp = next;
+                next = nums[next];
+                nums[temp] = -1;
+            }
+            
+            res = Math.max(res, count);
+        }
+        
+        return res;
+    }
+```
+ 
+ 
  
 ## Backtracking (通用解法) 基础 总结
 对于字符串的Backtrack (通用解法) 的套路总结
