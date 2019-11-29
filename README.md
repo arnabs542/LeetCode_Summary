@@ -2777,7 +2777,7 @@ Target:     a     c     d     d
 ```
 
 
-所以这题需要用一些额外的数据结构去模拟这个过程，这时候我们呢需要跟`295  Find Median from Data Stream` 相似，思路就是用两个PriorityQueue，一个`left`装最大值，一个`right`装最小值，然后一个个将数字塞进去两个堆，同时维护这两个堆的大小和；然后当这两个堆的和是等于`k`的时候，我们需要判断奇偶性来决定median,代码如下
+所以这题需要用一些额外的数据结构去模拟这个过程，这时候我们呢需要跟`295  Find Median from Data Stream` 相似，思路就是用两个PriorityQueue，一个`left`装最大值，一个`right`装最小值，然后一个个将数字塞进去两个堆，同时维护这两个堆的大小和；然后当这两个堆的和是等于`k`的时候，我们需要判断奇偶性来决定median, 这里的还需要移除nums[start],代码如下
 ```
     public double[] medianSlidingWindow(int[] nums, int k) {
         int n = nums.length;
