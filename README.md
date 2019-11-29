@@ -2960,9 +2960,64 @@ Target:     a     c     d     d
         return res;
     }
 ```
- 
- **Longest Repeating Character Replacement**
- 
+**Sliding Window Maximum**
+题目给定一个数组`nums`和一个`k`,要找出每次滑动窗口的最大值
+这里我用的是brute force的方法，每次我们都知道窗口的size是固定K的, 这里我们可以将每次滑动窗口的左边界找出来，也就是`l = r, l < r + k (0 < r < n - k + 1)`根据这个我们可以直接找到最大值，时间复杂度`O(nk - 1)`空间复杂度是`O(n)`
+```
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        // brute force 
+        
+        int n = nums.length;
+        int[] ans = new int[n - k + 1];
+        if (nums == null || nums.length == 0 || k <= 0) return new int[] {};
+        
+        for (int r = 0; r < n - k + 1; r++) {
+            // 初始最大值，
+            int max = Integer.MIN_VALUE;
+            // 初始左边界
+            int l = r;
+            // 开始找每一个window的maximum
+            while (l < r + k) {
+                max = Math.max(max, nums[l]);
+                l++;
+            }
+            ans[r] = max;
+        }
+        
+        return ans;
+    }
+```
+ 但还是太慢，这里有一个`O(n)`的解法，是用`Deque`的技巧来做，`Deque`存的是下标，并且是按照逆序排序的，这里我每次遍历数字的时候，当数字不在当前的滑动窗口的时候，需要移除这个数字，之后要去判断这个滑动窗口从左看的第一个数字是否比`Deque`的所有数字都要大，如果是的话，将这些数字小的全部排除，之后我们确保了`Deque`顶是当前滑动窗口最大的数，时间复杂度是`O(n)`
+ 代码如下
+ ```
+     public int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums == null || nums.length == 0) return new int[0];
+        
+        int[] res = new int[nums.length - k + 1];
+        
+        // 初始Deque， 存的是下标, 从大到小排序
+        Deque<Integer> deque = new LinkedList<>();
+        
+        // pop掉之前的，push之后的
+        for (int i = 0; i < nums.length; i++) {
+             // 将不在当前滑动窗口之内的数字移除
+            if (!deque.isEmpty() && deque.peekFirst() == i - k) {
+                deque.poll();
+            }
+            // 将当前数字左边比当前小的数字全部删除，
+            while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {
+                deque.removeLast();
+            }
+            
+            deque.offer(i);
+            if ((i + 1) >= k) {
+                res[i +  1 - k] =  nums[deque.peek()];
+            }
+        }
+        
+        return res;
+    }
+ ```
  
 ## Backtracking (通用解法) 基础 总结
 对于字符串的Backtrack (通用解法) 的套路总结
