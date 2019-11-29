@@ -2732,6 +2732,26 @@ Target:     a     c     d     d
 1.排序--找到对当前房子最近的heater--找到这个heater的最大半径
 2. Binary Search
 3. TreeSet
+这里我用了排序的方法，当这里排序的时候，我们去找到对当前house最近的heater index,然后我们去更新这个index来找到最大的半径
+代码如下
+```
+    public int findRadius(int[] houses, int[] heaters) {
+        Arrays.sort(houses);
+        Arrays.sort(heaters);
+        int radius = 0;
+        for (int house : houses) {
+            // find the index of closest heater near the house
+            int index = 0;
+            while (index + 1 < heaters.length && Math.abs(heaters[index  + 1] - house) <= Math.abs(heaters[index] - house)) {
+                index++;
+            }
+            // find the maximum radius
+            radius = Math.max(radius, Math.abs(heaters[index] - house));
+        }
+        
+        return radius;
+    }
+```
 
 **Sliding Window Median**
 这题给定了一个数组`nums`和一个整数`k`,然后我们要返回一个double 数组，每一个元素是sliding window 的median
