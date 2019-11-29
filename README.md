@@ -2727,6 +2727,11 @@ Target:     a     c     d     d
         return minLen == Integer.MAX_VALUE ? "" : s.substring(minStart, minStart + minLen);
     }
 ```
+**heaters**
+三种方法 
+1.排序--找到对当前房子最近的heater--找到这个heater的最大半径
+2. Binary Search
+3. TreeSet
 
 
  
