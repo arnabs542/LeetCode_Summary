@@ -161,155 +161,6 @@ Target can be reached or not
 
 For search the word in the words, use Trie to realize since Trie is used to find the string and match the prefix
 
-**406 Minimum size subarray sum**
-
-[2,3,1,2,4,3], s = 7
-Ans: 2 since [4, 3] has the sum equals to 7
-
-Two pointers
-
-`inc` 
-2   3   1   2   4   3 
-^
-l,r
-
-2   3   1   2   4   3 
-^    ^
-L,   r
-
-2   3   1   2   4   3 
-^         ^
-L,        r
-
-2   3   1   2   4   3 
-^             ^
-L,            r
-
-2   3   1   2   4   3 
-     ^        ^
-     L,       r
-Sum = 6
-
-…..
-
-
-2   3   1   2   4   3 
-     ^              ^ 
-     L,             r
-Sum = 10
-2   3   1   2   4   3 
-           ^        ^
-           L,        r
-Sum = 9
-2   3   1   2   4   3 
-               ^    ^
-               L,   r
-Sum = 7
-
-Algo
-So enumerate the right until the sum is greater than target sum
-
-
-
-S -- prefix sum
-Si = a[0] + a[0] + … + a[i]
-
-A[i] + a[i +1] + ...  + a[j] = S[j] - S[i - 1]
-
-Check if (Sj - Si - 1) greater than S
-
-
-**384 Longest Substring without Repeating Characters**
-
-A   b   b   a   c
-^   
-L
-
-A   b   b   a   c
-     ^   
-     L
-
-A   b   b   a   c
-           ^   
-           L
-
-For checking repeating characters, need an array 
-To store the characters the main and accessory pointers are pointing at 
-Each increase the with the corresponding character
-
-Int[] cnt = new int[256]
-For accessory pointer, 
-Cnt[sc[r]] ++
-
-For main pointer, it is actually deleting the character
-Cnt[sc[l]]--
-
-
-Red stands for bad
-
-If encounter sudden change from good to bad
-Or sudden change from bad to good
-
-Wanna find the longest
-
-Left won’t move left. When right moves to right 
-
-For loops  + while loops
-Main pointer (right pointer)   accessory pointer (left pointer)
-
-Two Pointers Template
-For (left pointer, right pointer; right pointer < length; right pointer++) {
-
-    While (some condition) {
-        l++;
-}
-    // Update the answer
-    
-}
-
-Two Pointers Template 3
-**32 Minimum window Substring**
-
-source : abczdedf target: acdd
-
-Output: abczded
-
-这里给定两个String，`s`和`t`,求出`s`最小子串符合`t`的所有字符，这里怎么去思考呢？ 我们可以想象一个滑动窗口，每次我们首先会有一个`map`数组记录`t`的所有字符出现的个数，然后我们定义一些参数, `count` 表示当前`t`的字串长度，然后左右指针，还有就是`minLen`,表示这个字串的长度，每次我们右指针往右走的时候，我们呢需要将`map`中右指针指的数字减少，然后每次这个map 中的字符出现次数是大于0的，说明这里是重复的字符，那么要减少`count`， 之后我们`count`为0的时候，就说明我们已经找到一个valid 的window，这里我们的目标就变成“如何找到最小的window？”, 这里需要多一个while 循环，然后在这个循环里面的时候，我们要更新`minLen` 也就是将这个小的窗口长度赋予到这里，然后左指针的作用就是将这个`map`中指代的字符出现次数增加，然后右移左指针，然后增加`count`,想象这里右指针是一个定好了的窗口，你现在要做的事情就是移动左窗户，将这个窗户的长度缩到最小，
-
-Target:     a     c     d     d
-
-```
-    public String minWindow(String s, String t) {
-        int[] map = new int[265];
-        for (char c : t.toCharArray()) {
-            map[c]++;
-        }
-        
-        int l = 0, r = 0, minStart = 0, minLen = Integer.MAX_VALUE, count = t.length();
-        
-        while (r < s.length()) {
-            if (map[s.charAt(r)] > 0) count--;
-            
-            map[s.charAt(r)]--;
-            r++;
-            
-            while (count == 0) {
-                if (minLen > r - l) {
-                    minLen = r - l;
-                    minStart = l;
-                }
-                
-                char c2 = s.charAt(l);
-                map[c2]++;
-                if (map[c2] > 0) count++;
-                l++;
-            }
-            
-            
-        }
-        return minLen == Integer.MAX_VALUE ? "" : s.substring(minStart, minStart + minLen);
-    }
-```
 
 快慢指针
 **Find Nth node from the end of List**
@@ -2231,7 +2082,6 @@ deque 的写法
 
 **992. Subarrays with K Different Integers**
 
-**76 Minimum window substring**
 模板题
 
 **209 Minimum Size Subarray sum**
@@ -2679,7 +2529,7 @@ key 存的是nums[i]， value 存的是出现的次数
     }
  ```
  
- **Missing Ranges**`number1->number2`
+ **Missing Ranges**
  这里给了一个数组和一个`lower`和一个`upper`分别表示上下边界，要输出一个Range array 去cover 所有元素之间的 missing的range, 同样以`number1->number2`的形式输出，这里我们已经有左右边界了，也就是我们要分三种情况讨论：
  1. 如果`lower`边界比`nums[0]`要小，我们就将`lower->nums[0] - 1`输入进入答案里面
  2. 如果元素之间的差比1要大，那么这里需要加入的是`nums[i] + 1->nums[i + 1] - 1`输入到答案里
@@ -2726,7 +2576,157 @@ key 存的是nums[i]， value 存的是出现的次数
     }
   ```
  
-二维数组4种交换方式 总结
+
+
+**406 Minimum size subarray sum**
+
+[2,3,1,2,4,3], s = 7
+Ans: 2 since [4, 3] has the sum equals to 7
+
+Two pointers
+
+`inc` 
+2   3   1   2   4   3 
+^
+l,r
+
+2   3   1   2   4   3 
+^    ^
+L,   r
+
+2   3   1   2   4   3 
+^         ^
+L,        r
+
+2   3   1   2   4   3 
+^             ^
+L,            r
+
+2   3   1   2   4   3 
+     ^        ^
+     L,       r
+Sum = 6
+
+…..
+
+
+2   3   1   2   4   3 
+     ^              ^ 
+     L,             r
+Sum = 10
+2   3   1   2   4   3 
+           ^        ^
+           L,        r
+Sum = 9
+2   3   1   2   4   3 
+               ^    ^
+               L,   r
+Sum = 7
+
+Algo
+So enumerate the right until the sum is greater than target sum
+
+
+
+S -- prefix sum
+Si = a[0] + a[0] + … + a[i]
+
+A[i] + a[i +1] + ...  + a[j] = S[j] - S[i - 1]
+
+Check if (Sj - Si - 1) greater than S
+
+
+**384 Longest Substring without Repeating Characters**
+
+A   b   b   a   c
+^   
+L
+
+A   b   b   a   c
+     ^   
+     L
+
+A   b   b   a   c
+           ^   
+           L
+
+For checking repeating characters, need an array 
+To store the characters the main and accessory pointers are pointing at 
+Each increase the with the corresponding character
+
+Int[] cnt = new int[256]
+For accessory pointer, 
+Cnt[sc[r]] ++
+
+For main pointer, it is actually deleting the character
+Cnt[sc[l]]--
+
+
+Red stands for bad
+
+If encounter sudden change from good to bad
+Or sudden change from bad to good
+
+Wanna find the longest
+
+Left won’t move left. When right moves to right 
+
+For loops  + while loops
+Main pointer (right pointer)   accessory pointer (left pointer)
+
+Two Pointers Template
+For (left pointer, right pointer; right pointer < length; right pointer++) {
+
+    While (some condition) {
+        l++;
+}
+    // Update the answer
+    
+}
+
+Two Pointers Template 3
+**32 Minimum window Substring**
+
+source : abczdedf target: acdd
+
+Output: abczded
+
+这里给定两个String，`s`和`t`,求出`s`最小子串符合`t`的所有字符，这里怎么去思考呢？ 我们可以想象一个滑动窗口，每次我们首先会有一个`map`数组记录`t`的所有字符出现的个数，然后我们定义一些参数, `count` 表示当前`t`的字串长度，然后左右指针，还有就是`minLen`,表示这个字串的长度，每次我们右指针往右走的时候，我们呢需要将`map`中右指针指的数字减少，然后每次这个map 中的字符出现次数是大于0的，说明这里是重复的字符，那么要减少`count`， 之后我们`count`为0的时候，就说明我们已经找到一个valid 的window，这里我们的目标就变成“如何找到最小的window？”, 这里需要多一个while 循环，然后在这个循环里面的时候，我们要更新`minLen` 也就是将这个小的窗口长度赋予到这里，然后左指针的作用就是将这个`map`中指代的字符出现次数增加，然后右移左指针，然后增加`count`,想象这里右指针是一个定好了的窗口，你现在要做的事情就是移动左窗户，将这个窗户的长度缩到最小，
+
+Target:     a     c     d     d
+
+```
+    public String minWindow(String s, String t) {
+        int[] map = new int[265];
+        for (char c : t.toCharArray()) {
+            map[c]++;
+        }
+        
+        int l = 0, r = 0, minStart = 0, minLen = Integer.MAX_VALUE, count = t.length();
+        
+        while (r < s.length()) {
+            if (map[s.charAt(r)] > 0) count--;
+            
+            map[s.charAt(r)]--;
+            r++;
+            
+            while (count == 0) {
+                if (minLen > r - l) {
+                    minLen = r - l;
+                    minStart = l;
+                }
+                
+                char c2 = s.charAt(l);
+                map[c2]++;
+                if (map[c2] > 0) count++;
+                l++;
+            }
+            
+            
+        }
+        return minLen == Integer.MAX_VALUE ? "" : s.substring(minStart, minStart + minLen);
+    }
+```
 
 
  
