@@ -2840,6 +2840,69 @@ Target:     a     c     d     d
     }
 ```
 
+ **Magical String**
+ 这里跟Sliding window 没有特别大的关系... 但是tag 上说是Two Pointer，这里主要是要找到这个magical string 的规律这个规律怎么去找呢？
+ 看下例子
+ ```
+ n = 3 nums = 1 2 2 
+ n = 6 nums = 1 2 2 1 1 
+ 然后我们看
+ 第三个数是2
+ generate 后面的数是 11
+ 也就是第四和第五个数是11
+ 然后根据第四个数是1，对应的是 2
+ 然后我们直接看2，2对应的是1
+ 也就是说最终的数组是这样
+ nums = 1 2 2 11 2 1
+ ```
+ 根据这里的规定那么我们可以用`Deque`来做这个操作，从第三个数字2开始，然后每次我们的下一个数字是确定的，也就是1，然后我们呢当前的答案只有1个，也就是1 22 里的第一个数字， 根据每次我们从`Deque` removeFirst的操作我们可以得到这个数字`cur`是否是1，如果是1 更新答案，然后往`Deque`加入`cur`次的`next`数字，完了之后我们需要将next 数字变一下，当前1的话下一个是2， 当前2的话下一个是1，以此类推。 代码如下
+ 时间复杂度O（n） 空间复杂度是O(1)
+ ```
+     /*
+        找到magical string
+        
+        Deque
+        
+        这里magical string的规律是
+        前3个数是 1 2 2
+        然后从第三个数2开始，我们有 2 -- 11
+        然后第四个数是1 对应 1 -- 2
+        第五个数是1  对应 1 -- 1
+        
+        
+    */
+    public int magicalString(int n) {
+        if (n <= 0) return 0;
+        //1 2 2
+        if (n <= 3) return 1;
+        
+        Deque<Integer> deque = new LinkedList<>(Arrays.asList(2));
+        // 1 2 2 1 
+        // next = 1
+        int len = 2;
+        int res = 1;
+        int next = 1;
+        while (len < n) {
+            int cur = deque.removeFirst();
+            if (cur == 1) {
+                res++;
+            }
+            
+            len++;
+            for (int i = 0; i < cur; i++) {
+                deque.addLast(next);
+            }
+            // change the next according to the order
+            if (next == 1) {
+                next = 2;
+            } else {
+                next = 1;
+            }
+        }
+        
+        return res;
+    }
+ ```
  
 ## Backtracking (通用解法) 基础 总结
 对于字符串的Backtrack (通用解法) 的套路总结
