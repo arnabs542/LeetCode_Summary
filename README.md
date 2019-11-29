@@ -2733,9 +2733,95 @@ Target:     a     c     d     d
 2. Binary Search
 3. TreeSet
 
+**Sliding Window Median**
+这题给定了一个数组`nums`和一个整数`k`,然后我们要返回一个double 数组，每一个元素是sliding window 的median
+这里我用了Brute force 去求解，也就是每次将window取出来，然后将window 进行一个排序，之后找到每个window的median，根据奇偶性，这里注意我们在写偶数的median的时候，我们需要用long型因为输入有`Integer.MAX_VALUE` 如果只用整形，会`Integer Overflow`。即使这样，这种方法会TLE, 代码如下
+```
+    public double[] medianSlidingWindow(int[] nums, int k) {
+
+        int n = nums.length;
+
+        double[] ans = new double[n - k  + 1];
+
+        for (int i = 0; i < n - k + 1; i++) {
+            int[] window = new int[k];
+            int r = 0;
+            for (int j = i; j < i + k; j++) {
+                window[r++] = nums[j];
+            }
+            // sort the window
+            Arrays.sort(window);
+            double median = 0;
+            // even
+            if (k % 2 == 0) {
+                // Here we need to take care about the integer overflow issue since two numbers are added
+                if (k == 2) {
+                    median = ((long)window[0] + (long)window[1]) / 2.0;
+                } else {
+                    median = ((long)window[k / 2] + (long)window[k / 2 - 1]) / 2.0;
+                }
+            } else { // odd
+
+                if (k == 1) {
+                    median = window[0];
+                } else {
+                    median = window[k / 2];
+                }
+            }
+
+            ans[i] = median;
+        }
+
+        return ans;
+    }
+```
+
+
+所以这题需要用一些额外的数据结构去模拟这个过程，这时候我们呢需要跟`295  Find Median from Data Stream` 相似，思路就是用两个PriorityQueue，一个`left`装最大值，一个`right`装最小值，然后一个个将数字塞进去两个堆，同时维护这两个堆的大小和；然后当这两个堆的和是等于`k`的时候，我们需要判断奇偶性来决定median,代码如下
+```
+    public double[] medianSlidingWindow(int[] nums, int k) {
+        int n = nums.length;
+        double[] ans = new double[n - k + 1];
+        
+        PriorityQueue<Integer> left = new PriorityQueue<>(Collections.reverseOrder());
+        
+        PriorityQueue<Integer> right = new PriorityQueue<>();
+        // Use two priority Queue to simulate the 
+        for (int i = 0; i < nums.length; i++) {
+            if (left.size() <= right.size()) {
+                right.add(nums[i]);
+                left.add(right.poll());
+            } else {
+                left.add(nums[i]);
+                right.add(left.poll());
+            }
+            if (left.size() + right.size() == k) {
+                double median;
+                if (left.size() == right.size()) {
+                    // Long avoids overflow
+                    // even
+                    median = (double)((long)left.peek() + (long)right.peek()) /2;
+                } else {
+                    median = (double)((long)left.peek());
+                }
+                // [1 3 -1] -3 5 3 6 7
+                //       i = 2
+                int start = i - k + 1;
+                ans[start] = median;
+            
+                if (!left.remove(nums[start])) {
+                    right.remove(nums[start]);
+                }
+            }
+        }
+        
+        return ans;
+        
+    }
+```
 
  
-## Backtrack (通用解法) 基础 总结
+## Backtracking (通用解法) 基础 总结
 对于字符串的Backtrack (通用解法) 的套路总结
 每次看到字符串的Backtrack 时，首先要想到的是这个题目需要我们做什么，是需要我们排列，组合，还是其他？然后我们得去思考什么参数是需要的，而在
 这里一般我们需要一个Temporal String或者StringBuilder 来改变我们递归时放入的String的格式，
