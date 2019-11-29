@@ -2157,7 +2157,36 @@ ans =2 exit since t = target.length()
  "AABABCC" k = 2
  l = 0, r = 4 inclusive
  ```
- 这里我们需要算出咱们要replace 的letter 个数是多少，那么再算这个之前我们需要知道两个东西，一个是窗口的大小，`window_size = r - l + 1`，一个是最多出现的character， `maxFreqChar`, 怎么知道当前的`maxFreqChar`? 我们可以用一个Hashmap 或者就一个26个数组就好，(因为这里我们是只有26个大写字母) 那么我们怎么判断这里的window是invalid的？只有当我们这个replace letter的个数比k要大，那么我们需要移动我们的左指针，并且需要 减少我们的`maxFreqChar` 和 map 里面左指针指向的character
+ 这里我们需要算出咱们要replace 的letter 个数是多少，那么再算这个之前我们需要知道两个东西，一个是窗口的大小，`window_size = r - l + 1`，一个是最多出现的character， `maxFreqChar`, 怎么知道当前的`maxFreqChar`? 我们可以用一个Hashmap 或者就一个26个数组去找到当前出现最多的character，(因为这里我们是只有26个大写字母)，然后我们需要找到replace letetr的个数`replaceLetters = window_size - maxFreqChar`, 然后判断这里的`replaceLetter`是否是invalid的？只有当我们这个replace letter的个数比k要大，就是一个invalid window，那么我们需要右移我们的左指针，map 里面左指针指向的character
+ 这道题非常长的套路，跟`Minimum Window Substring`非常类似，因为都是滑动窗口的提醒，我建议，如果我知道了这个是一个求连续的字符子序列相关的题目，一定要往滑动窗口的角度想，然后写的时候尽量将这里的框架写出来先，然后想细节的东西。
+ 
+ 代码如下：
+ ```
+     public int characterReplacement(String s, int k) {
+        int[] map = new int[26];
+        
+        int l = 0, max = 0, res = 0;
+        
+        for (int r = 0; r < s.length(); r++) {
+            // 增加当前字符出现次数
+            map[s.charAt(r) - 'A']++;
+            // 找到当前出现次数最多的字符
+            max = Math.max(max, map[s.charAt(r) - 'A']);
+            
+            // 求出要换的letter个数
+            int replaceLetter = r - l + 1 - max;
+            // 当换的letter 个数大于k的时候，我们要右移左指针
+            while (replaceLetter > k) {
+                map[s.charAt(l) - 'A']--;
+                l++;
+            }
+            
+            res = Math.max(res, r - l + 1);
+        }
+        
+        return res;
+    }
+ ```
  
  **Circular Array Loop**
  
@@ -2932,6 +2961,7 @@ Target:     a     c     d     d
     }
 ```
  
+ **Longest Repeating Character Replacement**
  
  
 ## Backtracking (通用解法) 基础 总结
