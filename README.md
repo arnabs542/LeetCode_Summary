@@ -3126,8 +3126,125 @@ Target:     a     c     d     d
         return res;
     }
  ```
- 
- 
+**Longest substring with at most K distinct characters**
+题目给定一个String`S`和一个Integer`K`要求出我们最多K个不同character 的最长字串的长度
+这道题和`Minimum window substring`很像，也就是用`sliding window`的方法，我们这里有一个`count`表示当前有多少个不同的字符， 需要有一个`HashMap` 去记录我们这个字符出现的次数是多少，然后我们遍历每一个字符，指针是`r`, 每一个左指针`l`是从0开始，然后我们每次遇到unique character的时候就更新我们的count， 然后我们更新我们`HashMap[r]++`，当我们的`count`已经超过K个的话，我们需要检查我们的`S.charAt(l)`是否已经在`HashMap`里了，如果在的话，我们就减少`count`然后右移我们的左边界`l`,之后我们也减少这个`S.charAt(l)`的出现次数，然后更新我们的长度
+
+时间复杂度`O（n）`
+代码如下
+```
+    public int lengthOfLongestSubstringKDistinct(String s, int k) {
+        // "eceba" k = 2
+        // Sliding window 
+        int[] map = new int[256];
+        // 不同字母有多少个
+        int count = 0;
+        int res = 0;
+        int l = 0;
+        for (int r = 0; r < s.length(); r++) {
+           
+            if (map[s.charAt(r)] == 0) count++;
+            
+            map[s.charAt(r)]++;
+            
+            // 找到非法的窗口
+            // 不断删除字符，使得
+            while (count > k) {
+                if (map[s.charAt(l)] == 1) count--;
+                map[s.charAt(l)]--;
+                l++;
+            }
+            
+            res = Math.max(res, r - l + 1);
+        }
+        
+        return res;
+    }
+```
+
+**Longest Substring with At Most Two Distinct Characters**
+这里跟`Longest Substring with at most K distinct characters`一样，只是`K`转成2了，代码如下
+```
+    public int lengthOfLongestSubstringTwoDistinct(String s) {
+        int res = 0, count = 0, l = 0;
+        int[] map = new int[256];
+        
+        for (int r = 0; r < s.length(); r++) {
+            //encounter distinct
+            if (map[s.charAt(r)] == 0) count++;
+            map[s.charAt(r)]++;
+            
+            while (count > 2) {
+                // if repeating
+                if (map[s.charAt(l)] == 1) count--;
+                map[s.charAt(l)]--;
+                l++;
+            }
+            
+            res = Math.max(res, r - l + 1);
+        }
+        
+        return res;
+    }
+```
+**Longest Substring with At Least K repeating Characters**
+
+题目给定一个String`S`和一个Integer`K`要求出我们至少K个character 重复出现的最长字串的长度
+这一题需要用到滑动窗口的思路，但是跟之前的`Longest Substring with At Most K Distinct Characters`有许多不同，这里需要用一个for循环去表示说我们这次迭代所允许的字母个数是多少，也就是说这个for 循环是从1到26的；然后每次迭代都是要做一次这个滑动窗口，找到当前最大的子串，
+对于每一个滑动窗口来讲，这里我们还是老样子，有`start`,`end`以及`HashMap`,但是我们还有多两个参数，一个是`numUnique`表示当前我们独特的字符个数，还有一个`numNoLessThanK`,表示当前我们有多少个字符已经出现了的至少K次，这两个参数是用来找到这个窗口的大小和更新我们的答案的关键参数，
+也就是说我们的`end`在遍历每一个字母的时候我们的`numUnique`是根据`map[s.charAt(end)] == 0`来增加，`numNoLessThanK`是根据`map[s.charAt(end)] == k`来增加，这里怎么去找到不合法的窗口呢？ 当我们的`numUnique`比`numNoLessThanK`要大的时候，说明我们这里窗口不符合要求，因为我们需要的是有一个窗口包含了`K`个重复的字符，现在独特的字符数要比这个`K`个重复的字符数要多，那么就需要操作`start`来做，这里我们如果`map[s.charAt(start)] == k` 减少`numNoLessThanK`,然后如果`map[s.charAt(start)] == 0`，减少`numUnique`
+什么时候更新窗口？ `numUnique == numUniqueTarget && numUnique == numNoLessThanK`
+代码如下
+```
+    public int longestSubstring(String s, int k) {
+        int res = 0;
+        for (int numUniqueTarget = 1; numUniqueTarget <= 26; numUniqueTarget++) {
+            res = Math.max(res, helper(s, k, numUniqueTarget));
+        }
+        return res;
+    }
+    
+    private int helper(String s, int k, int numUniqueTarget) {
+        int[] map = new int[128];
+        int start = 0, end = 0;
+        // 独特字符的出现次数
+        int numUnique = 0;
+        // 不少于K的字符次数
+        int numNoLessThanK = 0;
+        
+        int res = 0;
+        
+        while (end < s.length()) {
+            // 如果遇到的是unique的character
+            if (map[s.charAt(end)] == 0) numUnique++;
+            
+            map[s.charAt(end)]++;
+            // 如果是遇到了至少出现了k次的character
+            if (map[s.charAt(end)] == k) numNoLessThanK++;
+            
+            end++;
+            
+            // 如果numUnique 大于允许的出现字符的个数,说明我们要开始操作左指针了
+            while (numUnique > numUniqueTarget) {
+                
+                if (map[s.charAt(start)] == k) numNoLessThanK--;
+                map[s.charAt(start)]--;
+                
+                // 将出现过的字符删除
+                if (map[s.charAt(start)] == 0) numUnique--;
+                start++;    
+            }
+            //如果所有的字符都出现了，并且所有出现的字符的重复次数至少有K次
+            if (numUnique == numUniqueTarget && numUnique == numNoLessThanK) {
+                res = Math.max(res, end - start);
+            }
+        }
+        return res;
+    }
+```
+
+
+
 ## Backtracking (通用解法) 基础 总结
 对于字符串的Backtrack (通用解法) 的套路总结
 每次看到字符串的Backtrack 时，首先要想到的是这个题目需要我们做什么，是需要我们排列，组合，还是其他？然后我们得去思考什么参数是需要的，而在
