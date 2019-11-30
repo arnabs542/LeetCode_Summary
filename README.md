@@ -4469,8 +4469,8 @@ The actual implementation is similar to the BFS topological sort. Remove the lea
 The time complexity and space complexity are both O(n).
 Note that for a tree we always have V = n, E = n-1.
 
-7. 拓补排序 小结
-207 Course Schedule I
+## 7. 拓补排序 小结
+**207 Course Schedule I**
 
 这里涉及拓补排序的知识点，步骤如下
 新建一个Map叫graph，一个Map叫indegree
@@ -4479,12 +4479,12 @@ Note that for a tree we always have V = n, E = n-1.
 BFS，每次遍历当前点在图中的邻居，然后给这个邻居所在的indegree减一，如果这个indegree是0的话，那么就讲这个neighbor 加入到queue里
 最后判断这完成的课程数目是否等于number of courses
 
-210 Course Schedule II
+**210 Course Schedule II**
 本质跟207是一样的，但是这里需要返回所有课程ordering， 然后只需要一个数组ans和count, ans[count] 当前的课，然后当count等于number of courses的话，就返回ans数组，如果不能到达，就返回一个空数组
   
 
 
-Alien Dictionary
+**Alien Dictionary**
 这里也是一个拓补排序的应用，这里的用处就是将每次character 进行一个dependency的排序，比方说给定一个String的数组，
 [
   "wrt",
@@ -4502,18 +4502,24 @@ Alien Dictionary
 这里入度的构建就是首先将graph 的每一个Character key填入到res的里面，对应的value是1；
 然后这里再第二个for循环里面遍历每一个graph的Character key的邻居nei，然后将nei的对应入度值加1
 
-8. Flood Fill算法 小结
+## 8. Flood Fill算法 小结
+
 Flood Fill的输入就是一个普通的矩阵，与之相反，图中的DFS 或者BFS都是adjacent matrix，或者是HashMap<V, E>
-200 Number of Islands
+
+**200 Number of Islands**
 这里是典型的Flood Fill 算法的实现，每次我们遍历每一个cell，然后对每一个cell我们判断这个cell装的是否是’1’， 如果是，那么我们就用Flood Fill 算法去填这个cell周围所有的cells 并把合法的‘1’ cells变成’0’ 
 
 这里要判断是否越界
 然后递归调用四个方向
-130 Surrounded Regions
+
+**130 Surrounded Regions**
 跟200 Number of Islands 很像，但是他这里要多一个坑就是要去判断这个’O’ cell是否是在边界上，如果是在边界上那么我们就要Flood Fill 算法去把这些能convert成’X‘的cell 保持不变，然后将需要surrounded的cell 变成另一个Character,  比方说 ‘W’
 然后我们再遍历一次，这次只要看到有之前标记的不能convert的cell，我们把它们变回’O’,否则就改成’X’ cells
-286 Walls and Gates
-417 Pacific Atlantic Water Flow
+
+**286 Walls and Gates**
+
+**417 Pacific Atlantic Water Flow**
+
 我们首先要判断一下一个点能否流入Pacific 或者Atlantic，怎么判断？
 这里的高度值要高于或者等于4周围的节点值高度
 这里能达到第一列（pacific） 或者最后一列（atlantic) 
@@ -4585,7 +4591,7 @@ i = 0, res = 0 -> res = ‘A’ - ‘A’ + 1 = 1
 i = 1, res = 1 * 26 -> res = 26 + ‘B’ - ‘A’ + 1 = 26 + 2 = 28
 
 
-BFS DFS 算法
+**BFS DFS 算法**
 矩阵上找最小路的深搜模板 (有可能会TLE， 需要记忆化搜索)
 res = Integer.MAX_VALUE;
 int[][] dirs = {{1, -1}, {1, 0}, {1, 1}};
@@ -4615,13 +4621,13 @@ helper(matrix, sum, nx, ny);
     // back tracking
     sum -= matrix[x][y];
 }
-Knight Shortest Path 
+**Knight Shortest Path**
 since it’s asking for the shortest path of the knight, so BFS would come in handy, note in this the res needs updated before the level order traversal, and using HashSet would be cause TLE, only can we use the boolean array. Another thing that we need to consider is the direction of the knights, it can move in 8 directions, be sure to clarify that when encounter such problem
 
-K sum II
+**K sum II**
 it is asking if the any k numbers’ sum can be the target. So this problem very much like the subset problem that we did a couple days ago. The main difference is that the subset problem is that when the level reaches the end of the numbers, while this problem has two situations to consider: the k needs to be 0 since that means we run out of our choices, then we need to check if the remain (target after each iteration) equals to 0, if so, that means the numbers in the cur List fits the requirement and are ready to add to the res List. Be sure to recursively call the i + 1 instead of i as we are selecting the next numbers, each number can not be selected twice in this case
 
-Sales man travelling problem
+**Sales man travelling problem**
 all permutations, but need to transform the n by 3 array to 2 d array, 
 
 each of the costs is N by 3 array. Each element represents the city, so for each array we want to find the x and y’s cost (x = costs[i][0] - 1, y = costs[i][1] - 1), so it would be used to compare if the last city on each row in the costs array. The visited array is needed to record if the characters have been used
@@ -4631,16 +4637,15 @@ the base case for the dfs is to update the res if the current city cost is large
 
 The recursive case would be from 0 to the numbers of the cities, if the traversing city is not been visited or the cost from the 2d array is not equals to MAX_VALUE, then we should consider mark it as visited, and we should begin our next recursion with the current cost + cost between the previous city to the traversing city (2d_array[p][i]). after the recursive calls, we need to do the back tracking
 
-Palindrome Partitioning
+**Palindrome Partitioning**
 the essence of this problem is to every time make choices splitting the given input string s, and the each choice we want to check if the substring is a valid palindrome, so we also need a sub function to check each candidates is palindrome or not, for each recursive call, we need to call the i + 1 since we are iterating the next letter so that we would proceed to the next level
-区间小结 
-Missing Ranges 
-Merge Ranges 
-Insert Interval
+
 
 
 ----------------------------END OF BFS + DFS---------------------------------
-BFS小结
+
+## BFS小结
+
 BFS分层遍历与否的问题
 我想问一下BFS的算法在实现过程中，怎么哦按段该不该分层遍历，我知道在二叉树的BFS时，分不分层的区别体现在答案的要求，如果答案要的是将每一层分别存在一个list的话那就需要分层遍历（即循环当前queue的size），但是如果题目只是要求我们写出BFS的结果存在一个大list里面就好的话，那么就不需要做分层遍历了。
 我在做Knigh Shortest Path这道题的时候遇上了这个问题，答案是有做分层遍历的，但是我开始在做的时候没有考虑到分层遍历，代码如下：
@@ -4651,10 +4656,11 @@ BFS分层遍历与否的问题
 
 所以一个点BFS 出去的最短路经就是他的BFS 树形成 的层数
 
-[Leetcode] 994. Rotting Oranges
+**[Leetcode] 994. Rotting Oranges**
 Bfs 网格题，这里先将rotten orange 的位置放入到queue里，然后算fresh orange 的数量，然后就是BFS 四个方向搜索，然后每次先加rotten的数量，然后当遇到合法的fresh orange， 就将fresh orange的数量减一，最后判断fresh orange 的个数是否为0， 如果是0, 那么就返回rotten的count 减一，为什么要减一？Imagine you are doing BFS on a tree, starting from depth = 0, you do depth++ every level as you go down, adding child nodes into the queue, and when you reach the last level where all the nodes are null(for instance) you are still doing depth++. But essentially nulls are not required so you just do depth - 1 in the end and return. I hope you understood.
 [Leetcode] 
-317. Shortest Distance from All Buildings
+
+**317. Shortest Distance from All Buildings**
   1 -- Building 
   2 -- Obstacle 
     
@@ -4685,12 +4691,12 @@ Bfs 网格题，这里先将rotten orange 的位置放入到queue里，然后算
 
 
 
-PriorityQueue 小结
+## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
 但是你也可以反过来想，如果对小根堆只加入k次元素的话，那么这时小根堆就是储存从小到大的k个元素
 
 
-Rearrange String k Distance Apart
+**Rearrange String k Distance Apart**
 这里我们看例子得到一个信息就是，最高频的总是排在前面的，然后第二高频，第三高频...
 这里我们很快想到要统计这里的频率和对应的character 的index ，所以用Map，然后这里假设所characters 都是lowercase, 那么这里我们可以不用HashMap，可以用一个26个位置的数组来表示map ，
 关键点1： 表示index 和真正character 的关系是 根据 map[c - ‘a’]++ 得到index，
