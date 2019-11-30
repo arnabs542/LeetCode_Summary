@@ -3018,6 +3018,115 @@ Target:     a     c     d     d
         return res;
     }
  ```
+ **Substring with Concatenation of All Words**
+ 题目给定一个String `S`和一个String 数组`words`要求出所有words里面单词融合后能否在`S`里面的index的位置，这里还是滑动窗口的方法 
+ 这里跟`Minimum Window Substring`或者是`Sliding Window Maximum` 基本相同，我们有一个`HashMap`来记录我们每个单词的出现次数，我们还需要得到每个单词的长度`m`和单词个数`n`,这里我们遍历多少次？只遍历`s.length() - n * m`次 为什么？因为这里我们是将`words`里所有单词的进行一个筛选，所以这个遍历的总次数只需要`S`的长度减去`words`总字符和就可以了，然后我们有一个`count`表示当前有多少个单词还没有被筛选，`l`表示要开始的指针，
+ 我们开始去找符合要求的字串，`substring = s.substring(l, l + m)`，然后我们如果遇到了不符合要求的字串，我们直接跳过，然后对符合要求的字串，我们要讲它出现的次数减少1次，并且我们的`count--`表示这个单词已经达标了，然后我们`l += m`表示这个左指针是跳过了这个单词，
+ 
+ 最后只要所有单词都筛选完了，也就是`count == 0`的时候那么我们就加入一开始的指针到答案中去
+ 手动跑下例子
+ 
+ ```
+ S = "barfoothefoobarman" 
+         l
+      r
+ 
+ count = 1 
+ 
+ mapCopy
+ foo: 1
+ bar: 0
+ words = {"foo", "bar"}
+ 
+ S = "barfoothefoobarman" 
+            l
+      r
+ 
+ count = 0
+ 
+ mapCopy
+ foo: 0
+ bar: 0
+ words = {"foo", "bar"}
+ res {0, }
+ 
+ 
+ S = "barfoothefoobarman" 
+                  l
+               r
+ 
+ count = 1 
+ 
+ mapCopy
+ foo: 0
+ bar: 1
+ words = {"foo", "bar"}
+ res = {0, }
+ 
+ 
+ S = "barfoothefoobarman" 
+                     l
+               r
+ 
+ count = 0 
+ 
+ mapCopy
+ foo: 0
+ bar: 0
+ words = {"foo", "bar"}
+ res = {0, 9}
+ ```
+ 
+ 
+ 代码如下
+ ```
+     public List<Integer> findSubstring(String s, String[] words) {
+        
+        List<Integer> res = new ArrayList<>();
+        if (words == null || words.length == 0 || s == null) {
+            return res;
+        }
+        
+        Map<String, Integer> map = new HashMap<>();
+        
+        for (String w : words) {
+            map.put(w, map.getOrDefault(w, 0) + 1);
+        }
+        
+        int n = words.length;
+        int m = words[0].length();
+        
+        // 总的长度减去words 里面所有单词的长度和
+        for (int r = 0; r <= s.length() - n * m; r++) {
+            Map<String, Integer> copy = new HashMap<>(map);
+            
+            int l = r;
+            // count 代表words里单词的个数
+            int count = n;
+            
+            // 去找到在words里出现的子串，
+            while (count > 0) {
+                // 当前的子串
+                String str = s.substring(l, l + m);
+                // 如果当前的单词没有出现在HashMap里或者当前的单词没有足够多的出现次数，直接跳过
+                if (!copy.containsKey(str) || copy.get(str) < 1) {
+                    break;
+                }
+                // 如果在words里面，我们要去更新count，说明有一个已经达标了，
+                copy.put(str, copy.get(str) - 1);
+                count--;
+                
+                l += m;
+            }
+            
+            // 如果count == 0, 说明所有单词都达标了，那么r就是这个concatenation的开始下标
+            if (count == 0) res.add(r);
+        }
+        
+        return res;
+    }
+ ```
+ 
  
 ## Backtracking (通用解法) 基础 总结
 对于字符串的Backtrack (通用解法) 的套路总结
