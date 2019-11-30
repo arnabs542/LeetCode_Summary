@@ -3192,7 +3192,15 @@ Target:     a     c     d     d
 题目给定一个String`S`和一个Integer`K`要求出我们至少K个character 重复出现的最长字串的长度
 这一题需要用到滑动窗口的思路，但是跟之前的`Longest Substring with At Most K Distinct Characters`有许多不同，这里需要用一个for循环去表示说我们这次迭代所允许的字母个数是多少，也就是说这个for 循环是从1到26的；然后每次迭代都是要做一次这个滑动窗口，找到当前最大的子串，
 对于每一个滑动窗口来讲，这里我们还是老样子，有`start`,`end`以及`HashMap`,但是我们还有多两个参数，一个是`numUnique`表示当前我们独特的字符个数，还有一个`numNoLessThanK`,表示当前我们有多少个字符已经出现了的至少K次，这两个参数是用来找到这个窗口的大小和更新我们的答案的关键参数，
-也就是说我们的`end`在遍历每一个字母的时候我们的`numUnique`是根据`map[s.charAt(end)] == 0`来增加，`numNoLessThanK`是根据`map[s.charAt(end)] == k`来增加，这里怎么去找到不合法的窗口呢？ 当我们的`numUnique`比`numNoLessThanK`要大的时候，说明我们这里窗口不符合要求，因为我们需要的是有一个窗口包含了`K`个重复的字符，现在独特的字符数要比这个`K`个重复的字符数要多，那么就需要操作`start`来做，这里我们如果`map[s.charAt(start)] == k` 减少`numNoLessThanK`,然后如果`map[s.charAt(start)] == 0`，减少`numUnique`
+也就是说我们的`end`在遍历每一个字母的时候我们的`numUnique`是根据`map[s.charAt(end)] == 0`来增加，`numNoLessThanK`是根据`map[s.charAt(end)] == k`来增加，这里怎么去找到不合法的窗口呢？ 当我们的`numUnique`比`numNoLessThanK`要大的时候，说明我们这里窗口不符合要求，因为我们需要的是有一个窗口包含了`K`个重复的字符，现在独特的字符数要比这个`K`个重复的字符数要多，那么就需要操作`start`来做，这里我们如果`map[s.charAt(start)] == k` 减少`numNoLessThanK`,然后如果`map[s.charAt(start)] == 0`，减少`numUnique`, 为什么是当`map[s.charAt(start)] == 0`，减少`numUnique`？因为举例 
+```
+比方说
+s = "ababb"
+这里一开始我们是"ab"
+numUnique = 2
+但是后面会出现"bb"，这时我们的numUnique需要删除掉'a'这样我们才能确定
+最多出现了K次重复的character
+```
 什么时候更新窗口？ `numUnique == numUniqueTarget && numUnique == numNoLessThanK`
 代码如下
 ```
