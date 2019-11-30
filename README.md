@@ -4327,7 +4327,7 @@ Simplify Path
 原文链接：https://blog.csdn.net/genius_wenbo/article/details/79672102
 
  
-5. 图的算法 小结
+## 5. 图的算法 小结
 
 
 
@@ -4689,7 +4689,130 @@ Bfs 网格题，这里先将rotten orange 的位置放入到queue里，然后算
 (1, 1) (1, 0) size = 2, queue poll (0,1)
 控制了这size的话，我们就知道这里的(1, 1)是要走两步才能到达，所以这就是为什么size 需要用到的原因
 
-
+**Remove Invalid Parentheses**
+题目要求我们返回所有的可能的正确括号的List， 给定一个字符串`S`， 所以应该对合法的含有括号的字符串并不陌生，字符串中的左右括号数应该相同，而且每个右括号左边一定有其对应的左括号，而且题目中给的例子也说明了去除方法不唯一，需要找出所有合法的取法。参考了网上大神的解法，这道题首先可以用 BFS 来解，我把给定字符串排入队中，然后取出检测其是否合法，若合法直接返回，不合法的话，对其进行遍历，对于遇到的左右括号的字符，去掉括号字符生成一个新的字符串，如果这个字符串之前没有遇到过，将其排入队中，用 HashSet 记录一个字符串是否出现过。对队列中的每个元素都进行相同的操作，直到队列为空还没找到合法的字符串的话，那就返回空集，参见代码如下：
+```
+    public List<String> removeInvalidParentheses(String s) {
+      List<String> res = new ArrayList<>();
+      
+      // sanity check
+      if (s == null) return res;
+      
+      Set<String> visited = new HashSet<>();
+      Queue<String> queue = new LinkedList<>();
+      
+      // initialize
+      queue.add(s);
+      visited.add(s);
+      
+      boolean found = false;
+      
+      while (!queue.isEmpty()) {
+        s = queue.poll();
+        
+        if (isValid(s)) {
+          // found an answer, add to the result
+          res.add(s);
+          found = true;
+        }
+      
+        if (found) continue;
+      
+        // generate all possible states
+        for (int i = 0; i < s.length(); i++) {
+          // we only try to remove left or right paren
+          if (s.charAt(i) != '(' && s.charAt(i) != ')') continue;
+        
+          String t = s.substring(0, i) + s.substring(i + 1);
+        
+          if (!visited.contains(t)) {
+            // for each state, if it's not visited, add it to the queue
+            queue.add(t);
+            visited.add(t);
+          }
+        }
+      }
+      
+      return res;
+    }
+    
+    // helper function checks if string s contains valid parantheses
+    boolean isValid(String s) {
+      int count = 0;
+    
+      for (int i = 0; i < s.length(); i++) {
+        char c = s.charAt(i);
+        if (c == '(') count++;
+        if (c == ')' && count-- == 0) return false;
+      }
+    
+      return count == 0;
+    }
+```
+这一题也可以用 Backtracking 来做，这种解法首先统计了多余的半括号的数量，用 `openN`表示多余的左括号，`closeN`表示多余的右括号，因为给定字符串左右括号要么一样多，要么左括号多，要么右括号多，也可能左右括号都多，比如 ")("。所以 `openN`和 `closeN` 要么都为0，要么都大于0，要么一个为0，另一个大于0。好，下面进入递归函数，首先判断，如果当 `openN` 和 `closeN`都为0时，说明此时左右括号个数相等了，调用 `isValid` 子函数来判断是否正确，正确的话加入结果 res 中并返回即可。否则从 `index` 开始遍历，这里的变量 `index` 表示当前递归开始的位置，不需要每次都从头开始，会有大量重复计算。而且对于多个相同的半括号在一起，只删除第一个，比如 "())"，这里有两个右括号，不管删第一个还是删第二个右括号都会得到 "()"，没有区别，所以只用算一次就行了，通过和上一个字符比较，如果不相同，说明是第一个右括号，如果相同则直接跳过。此时来看如果 `openN` 大于0，说明此时左括号多，而如果当前字符正好是左括号的时候，可以删掉当前左括号，继续调用递归，此时 `openN` 的值就应该减1，因为已经删掉了一个左括号。同理，如果 `closeN`大于0，说明此时右括号多，而如果当前字符正好是右括号的时候，可以删掉当前右括号，继续调用递归，此时 `closeN` 的值就应该减1，因为已经删掉了一个右括号，参见代码如下：
+```
+    public List<String> removeInvalidParentheses(String s) {
+        
+        
+        int count = 0, openN = 0, closeN = 0;
+        for (char c : s.toCharArray()) {
+            if (c == '(') {
+                count++;
+            } else if (c == ')') {
+                if (count == 0) closeN++;
+                else count--;
+            }
+        }
+        
+        openN = count;
+        count = 0;
+        
+        if (openN == 0 && closeN == 0) {
+            return Arrays.asList(s);
+        }
+        List<String> res = new ArrayList<>();
+        
+        helper(s, res, 0, openN, closeN);
+        
+        return res;
+        
+    }
+    
+    private void helper(String s, List<String> res, int index, int openN, int closeN) {
+        if (openN == 0 && closeN == 0) {
+            if (isValid(s)) {
+                res.add(s);
+            }
+            return;
+        }
+        for (int i = index; i < s.length(); i++) {
+            // remove duplicates
+            if (i != index && s.charAt(i - 1) == s.charAt(i)) continue;
+            if (s.charAt(i) == '(') {
+                helper(s.substring(0, i) + s.substring(i + 1), res, i, openN - 1, closeN);
+            }
+            if (s.charAt(i) == ')') {
+                helper(s.substring(0, i) + s.substring(i + 1), res, i, openN, closeN - 1);
+            }
+        }
+        
+        
+    }
+    
+    private boolean isValid(String str) {
+        int count = 0;
+        for (char c : str.toCharArray()) {
+            if (c == '(') {
+                count++;
+            } else if (c == ')' && --count < 0) {
+                return false;
+            }
+        }
+        
+        return count ==  0;
+    }
+    
+```
 
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
@@ -4725,7 +4848,7 @@ Bfs 网格题，这里先将rotten orange 的位置放入到queue里，然后算
 这里跟373相类似，也可以用二分搜索的方法去做，这里我们维护一个大根堆，然后每次让这个堆得元素个数等于k， 最后返回堆顶元素就是第k小的
 218. The Skyline Problem 
 
-264. The Ugly Number II
+**264. The Ugly Number II**
 PriorityQueue
         关键点一：将ugly number放入到heap 中每次如果有相同的数字，就pop 出来
         每次poll 一次 temp = heap.poll(), 然后将 temp * 2, temp * 3, and temp * 5 放入
@@ -4744,32 +4867,43 @@ PriorityQueue
 Binary Search 二分法小结
 []
 
-DFS 算法小结
-[Leetcode] 733 Flood fill 
+## DFS 算法小结
+
+**[Leetcode] 733 Flood fill**
 网格搜索DFS 模板题，
-[Leetcode] 257. Binary Tree Paths
+
+**[Leetcode] 257. Binary Tree Paths**
 这里是我用了StringBuilder去更新current String，但是如何限制String 的长度将它放到答案里需要在recursion之前拿到StringBuilder 的长度，最后在设置递归后的StringBuilder 的长度为之前的长度，
-[Leetcode] 100. Same Tree
+
+**[Leetcode] 100. Same Tree**
 递归分析三种情况， 当p和q都为null时， 返回true， 当只有一条树为null时，返回false，当两个树的值不一样时返回false，递归返回左右子树值
-[Leetcode] 108. Convert Sorted Array to Binary Search Tree
+
+**[Leetcode] 108. Convert Sorted Array to Binary Search Tree**
 找到这个sorted array 的中点，然后将这个树的root的值定义为这个数组的中点值，然后，根据递归调用，分别使用从左端点到中点减一求左子树，从中点加一到右端点求右子树，
-[Leetcode] 690. Employee Importance
+**[Leetcode] 690. Employee Importance**
 首先用map去记录每一个employee的id和employee；然后根据id 去找到对应的employee， 然后通过递归去找到每一个subordinate 的importance 然后加到sum
-[Leetcode] 872. Leaf-Similar Trees
+
+**[Leetcode] 872. Leaf-Similar Trees**
 先用递归方法将每个node 的值放入到一个List中，然后对比这两个List的值，如果有不一样直接返回false， 否则返回true
-[Leetcode] 897. Increasing Order Search Tree
+
+**[Leetcode] 897. Increasing Order Search Tree**
 先通过递归中序遍历拿到node的值存到List中，然后根据这个List的每个值重建一条只有右子节点二叉树
-[Leetcode] 559. Maximum Depth of N-ary Tree
+
+**[Leetcode] 559. Maximum Depth of N-ary Tree**
 这里通过递归调用去比较每个node 的children node的maxdepth 求最大depth
-[Leetcode] 101 Symmetric Tree
+
+**[Leetcode] 101 Symmetric Tree**
 这里有三种情况，1. 这Tree要symmetric的条件是两个子树的root的值相同
                            2. 这两个subtree 其中一个子树的左子树和另一个子树的右子树相同
                            3. 当这两个子树中其中一个不为null时，直接返回false
-[Leetcode] 110. Balanced Binary Tree
+
+**[Leetcode] 110. Balanced Binary Tree**
 检查两个子树返回的height 之差大于1 如果大于1， 那么结果就是false，否则就是true
-[Leetcode] 111. Minimum Depth of Binary Tree
+
+**[Leetcode] 111. Minimum Depth of Binary Tree**
 检查每次当到叶子节点时候，这个sum 和全局变量res的比较
-[Leetcode] 979. Distribute Coins in Binary Tree
+
+**[Leetcode] 979. Distribute Coins in Binary Tree**
 if node has greater one coin, 
 we can have the coins number on the subtrees dfs(node) would return the [# of nodes in the subtree, # number of coins in the subtree]. the moves of the subtree can be abs(# of nodes - # of coins). then return the [number of nodes of subtrees + 1, # number of coins of subtrees + root.val]
 [Leetcode] 993. Cousins in Binary Tree
@@ -4782,17 +4916,17 @@ at the end, we need to check the criteria
 BFS:
 we can set up two boolean values checking if x or y is existing, then every time we do our level order traversal, we check the current node’s left and right child is x and y or y and x → false if yes, then we set xExist = true if current node value is x or yExist = true if current node value is y 
 
-DFS + 回溯法 算法小结
-123. Word Search
-135. Combination Sum
-570. Find the Missing Number II
-152. Combinations
-913. Flip Game II
-1020. All Paths From Source to Target
-426. Restore IP addresses
-[Leetcode] 531. Lonely Pixel I
-1612. Smallest Path
-164. Unique Binary Search Trees II
+## DFS + 回溯法 算法小结
+**123. Word Search**
+**135. Combination Sum**
+**570. Find the Missing Number II**
+**152. Combinations**
+**913. Flip Game II**
+**1020. All Paths From Source to Target**
+**426. Restore IP addresses**
+**[Leetcode] 531. Lonely Pixel I**
+**1612. Smallest Path**
+**164. Unique Binary Search Trees II**
 
 
 --------------------------------------END------------------------------------
