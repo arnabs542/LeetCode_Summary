@@ -4814,6 +4814,40 @@ Bfs 网格题，这里先将rotten orange 的位置放入到queue里，然后算
     
 ```
 
+**Find Largest Value in Each Tree Row**
+基础BFS分层遍历，每次存最大值
+代码：
+```
+    public List<Integer> largestValues(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        
+        if (root == null) return list;
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            int max = Integer.MIN_VALUE;
+            for (int i = 0; i < size; i++) {
+                TreeNode cur = queue.poll();
+                max = Math.max(max, cur.val);
+                
+                if (cur.left != null) {
+                    queue.offer(cur.left);
+                }
+                
+                if (cur.right != null) {
+                    queue.offer(cur.right);
+                }
+            }
+            list.add(max);
+        }
+        
+        return list;
+    }
+```
+
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
 但是你也可以反过来想，如果对小根堆只加入k次元素的话，那么这时小根堆就是储存从小到大的k个元素
@@ -5598,9 +5632,10 @@ dp[i][j] = dp[i - 1][j - 1] + prices[i - 1]
 dp[i][j] = max(dp)
 
 
-Best time to buy and sell stock with 1 day Cooldown
+**Best time to buy and sell stock with 1 day Cooldown**
 
 
+**Perfect Squares**
 
  
 
