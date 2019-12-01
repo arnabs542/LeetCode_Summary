@@ -4969,6 +4969,52 @@ Bfs 网格题，这里先将rotten orange 的位置放入到queue里，然后算
         return count;
     }
 ```
+**01 Matrix**
+题目给定一个矩阵`matrix`和
+这里是一个典型的`BFS`题 而且凡是这种要求找从`1`到`0`的最短距离的题目，这里我们要去倒着想，是要从每一个`0`作为起点出发去找离`1`的距离，所以要先遍历一遍矩阵然后将所有`1`设成`Integer.MAX_VALUE` 之后的话开始BFS，这里注意除了判断越界之外我们要多一个条件`matrix[nx][ny] <= matrix[cur[0]][cur[1]] + 1`, 这个条件的意思是如果周围点的值小于等于当前值加1，则直接跳过。因为周围点的距离更小的话，就没有更新的必要，代码如下
+```
+    int[] dx = {-1, 1, 0, 0};
+    int[] dy = {0, 0, -1, 1};
+    int m;
+    int n;
+    // 遇到这种题目，是要从0去找到1的距离，而不是按照题目意思说的从1去找0的距离
+    // 所以所有0的cell 都要放到队列当中去
+    public int[][] updateMatrix(int[][] matrix) {
+        this.m = matrix.length;
+        this.n = matrix[0].length;
+        
+        Queue<int[]> queue = new LinkedList<>();
+        Set<int[]> visited = new HashSet<>();
+        
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == 0) {
+                    queue.offer(new int[] {i, j});
+                } else {
+                    matrix[i][j] = Integer.MAX_VALUE;
+                }
+            }
+        }
+        
+        while (!queue.isEmpty()) {
+            int[] cur = queue.poll();
+            
+            for (int k = 0; k < 4; k++) {
+                int nx = cur[0] + dx[k];
+                int ny = cur[1] + dy[k];
+                // 最后的那个条件的意思是 如果越界或者周围点的值小于等于当前值加1，则直接跳过。因为周围点的距离更小的话，就没有更新的必要
+                if (nx < 0 || nx >= m || ny >= n || ny < 0 || matrix[nx][ny] <= matrix[cur[0]][cur[1]] + 1) {
+                    continue;
+                }
+                queue.offer(new int[] {nx, ny});
+                matrix[nx][ny] = matrix[cur[0]][cur[1]] + 1;
+            }
+        }
+        
+        return matrix;
+    }
+```
+
 
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
