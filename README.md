@@ -4847,6 +4847,128 @@ Bfs 网格题，这里先将rotten orange 的位置放入到queue里，然后算
         return list;
     }
 ```
+**Minesweeperd**
+题目给定一个棋盘`board`，和一个起始位置`click`,要求有三个规则， 第一个规则是如果直接`click`到了炸弹`M`的话，就将炸弹转成`X`并返回，第二个规则是如果一个未知的空地`E`附近8个方向没有炸弹`M`的话，就将`E`设成`B`表示已经展现出来的空地，第三个规则是如果`E`附近有炸弹`M`的话，转成距离炸弹`M`的`digits`距离， `digits`有从1到8的大小，这里最需要注意的是我们每个cell 都要找到`M`的数量
+这里我们可以用`BFS`来做，这里我们有8个方向，在搜索的时候我们会每次从队列里拿出当前的点的坐标时我们要往8个方向去找是否附近有炸弹`M`?然后记录炸弹的数量，如果没有炸弹的话，我们就把当前坐标标为`B` 然后往8个方向继续搜,否则就返回`mines + '0'` 代码如下:
+```
+    int[] dx = new int[]{0, -1, 0, 1, 1, -1, 1, -1};
+    int[] dy = new int[]{1, 0, -1, 0, 1, -1, -1, 1};
+    public char[][] updateBoard(char[][] board, int[] click) {
+        if (board[click[0]][click[1]] == 'M') {
+            board[click[0]][click[1]] = 'X';
+            return board;
+        }
+        Queue<int[]> queue = new LinkedList<>();
+        Set<int[]> visited = new HashSet<>();
+        
+        queue.offer(click);
+        visited.add(click);
+        
+        int m = board.length;
+        int n = board[0].length;
+    
+        while (!queue.isEmpty()) {
+            int[] cur = queue.poll();
+            int x = cur[0], y = cur[1];
+            int mines = getNumOfMines(board, x, y);
+            
+            if (mines == 0) {
+                board[x][y] = 'B';
+                for (int k = 0; k < 8; k++) {
+                    int nx = x + dx[k];
+                    int ny = y + dy[k];
+                    int[] pair = new int[] {nx, ny};
+                    if (nx >= 0 && nx < m && ny >= 0 && ny < n && !visited.contains(pair) && board[nx][ny] == 'E') {
+                        visited.add(pair);
+                        queue.offer(pair);
+                    }
+                }
+            } else {
+                board[x][y] = (char)(mines + '0');
+            }
+            
+        }
+        
+        return board;
+    }
+    
+    private int getNumOfMines(char[][] board, int i, int j) {
+        int count = 0;
+        for (int k = 0; k < 8; k++) {
+            int nx = i + dx[k];
+            int ny = j + dy[k];
+            
+            if (nx == i && ny == j) continue;
+            
+            if (nx >= 0 && nx < board.length && ny >= 0 && ny < board[0].length) {
+                count += board[nx][ny] == 'M' ? 1 : 0;
+            }
+        }
+        
+        return count;
+    }
+```
+或者我们可以用`Flood Fill`来做，我们要判断每一个cell的八个方向是否有炸弹`M`如果有就设`board[nx][ny] = (mines + '0')`否则就设`board[nx][ny] = 'B'`然后继续往8个方向走，
+代码：
+```
+    // flood fill
+    int[] dx = new int[]{0, -1, 0, 1, 1, -1, 1, -1};
+    int[] dy = new int[]{1, 0, -1, 0, 1, -1, -1, 1};
+    public char[][] updateBoard(char[][] board, int[] click) {
+        if (board[click[0]][click[1]] == 'M') {
+            board[click[0]][click[1]] = 'X';
+            return board;
+        }
+        int m = board.length;
+        int n = board[0].length;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == click[0] && j == click[1]) {
+                    helper(board, i, j);
+                }
+            }
+        }
+        
+        return board;
+    }
+    
+    private void helper(char[][] board, int i, int j) {
+        int mines = getNumOfMines(board, i, j);
+        
+        if (i < 0 || i >= board.length || j < 0 || j >= board[0].length || board[i][j] != 'E') {
+            return;
+        }
+        
+        if (mines == 0) {
+            board[i][j] = 'B';
+            
+            for (int k = 0; k < 8; k++) {
+                int nx = i + dx[k];
+                int ny = j + dy[k];
+                
+                helper(board, nx, ny);
+            }
+        } else {
+            board[i][j] = (char)(mines + '0');
+        }
+    }
+    
+    private int getNumOfMines(char[][] board, int i, int j) {
+        int count = 0;
+        for (int k = 0; k < 8; k++) {
+            int nx = i + dx[k];
+            int ny = j + dy[k];
+            
+            if (nx == i && ny == j) continue;
+            
+            if (nx >= 0 && nx < board.length && ny >= 0 && ny < board[0].length) {
+                count += board[nx][ny] == 'M' ? 1 : 0;
+            }
+        }
+        
+        return count;
+    }
+```
 
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
