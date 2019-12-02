@@ -5014,7 +5014,83 @@ Bfs 网格题，这里先将rotten orange 的位置放入到queue里，然后算
         return matrix;
     }
 ```
+**Open the lock**
 
+这一题给定一个`target`和一个`String[] deadends`要求从一开始的锁`"0000"`到达target的最短转动的多少次轮能达到？这里要求是最少转动次数，所以我们考虑用`BFS`的`分层遍历`来做，因为这里有`deadends`表示不能到达的死锁位置，要小心一些corner case, 像一开始的`"0000"`或者`target`在这个`deadends`里的话，那就直接返回-1. 在进行BFS的时候，我们要去找到下一个可能的转的次数组合，这里我们呢有一个`getNext`函数帮我们做这个事情，在这个函数里面我们有两个操作，一个是`向上拨号码： sc[i] = (origin + 1) % 10 + '0'`来表示下一个数字是多少，另外的操作就是`向下拨号码： sc[i] = (origin - 1 + 10) % 10 + '0'` 这里`origin`表示的是原来的`sc[i]`， `sc`是当前组合的charArray 形式，最后我们检查这些组合是否不是在`deadends`里面，如果不在就放到下一个可能组合的List里，代码如下:
+```
+    public int openLock(String[] deadends, String target) {
+        
+        Set<String> deadSet = new HashSet<>();
+        
+        for (String d : deadends) {
+            deadSet.add(d);
+        }
+        
+        // corner case
+        for (String d : deadends) {
+            if (d.equals("0000") || d.equals(target)) {
+                return -1;
+            }
+        }
+        
+        
+        
+        Queue<String> queue = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
+        
+        String start = "0000";
+        queue.offer(start);
+        visited.add(start);
+        int count = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                String cur = queue.poll();
+            
+                if (cur.equals(target)) {
+                    return count;
+                }
+
+                for (String next : getNext(cur, deadSet)) {
+                    if (!visited.contains(next)) {
+                        queue.offer(next);
+                        visited.add(next);
+                    }
+                }
+            }
+            count++;
+        }
+        
+        // return -1 if impossible
+        return -1;
+    }
+    
+    private List<String> getNext(String cur, Set<String> deadSet) {
+        List<String> res = new ArrayList<>();
+        
+        
+        for (int i = 0; i < cur.length(); i++) {
+            char[] sc = cur.toCharArray();
+            char origin = sc[i];
+            
+            //往下拨，'1' -- '2' 注意'9'往下拨是'0'
+            sc[i] = (char)((origin - '0' + 1) % 10 + '0');
+            String nextCur = new String(sc);
+            if (!deadSet.contains(nextCur)) {
+                res.add(nextCur);
+            }
+            // 往上拨，注意'0' 往上应该是'9'
+            sc[i] = (char)((origin - '0' - 1 + 10) % 10 + '0');
+            nextCur = new String(sc);
+            if (!deadSet.contains(nextCur)) {
+                res.add(nextCur);
+            }
+            
+        }
+        
+        return res;
+    }
+```
 
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
