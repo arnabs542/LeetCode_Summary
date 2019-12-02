@@ -5172,8 +5172,100 @@ Bfs 网格题，这里先将rotten orange 的位置放入到queue里，然后算
         return -1;
     }
 ```
+**Sliding Puzzle**
+题目给定一个`int[][] board` 要求找到能到达最后taget state, 也就是`tagret = “123450”`这里是以String的格式来做，我们有几个问题需要解决
+```
+1. 如何定义`start`?
+2. 如何定义方向？
+3. 如何去`swap`?
+```
+这里我们首先去想方向， 这里方向是根据我们0所在的索引往“上，下，左，右”四个方向延展，举例说明
+```
+idx_0 = 0 
+[0 1 2]
+[3 4 5]
+swap_indices = {1, 3}
 
+idx_0 = 1 
+[1 0 2]
+[3 4 5]
+swap_indices = {0, 2, 4}
 
+idx_0 = 2 
+[1 2 0]
+[3 4 5]
+swap_indices = {1, 5}
+
+idx_0 = 3 
+[1 2 3]
+[0 4 5]
+swap_indices = {0, 4}
+
+idx_0 = 4 
+[1 2 3]
+[4 0 5]
+swap_indices = {1, 3, 5}
+
+idx_0 = 5 
+[1 2 3]
+[4 5 0]
+swap_indices = {2, 4}
+```
+然后`start`应该是当前`board`的所有数字的String模式，`swap`就是先得到我们当前从队列顶的元素，`cur`的`'0'`所在的index，然后通过`dirs[zero_index]`来找需要swap的方向数组，然后我们就`BFS`过程，代码如下
+```
+    public int slidingPuzzle(int[][] board) {
+        String target = "123450";
+        String start = "";
+        Queue<String> queue = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
+        
+        int[][] dirs = new int[][] {{1, 3}, {0, 2, 4}, {1, 5}, {0, 4}, {1, 3, 5}, {2, 4}};
+        
+        int m = board.length, n = board[0].length;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                start += board[i][j];
+            }
+        }
+        queue.offer(start);
+        visited.add(start);
+        
+        int count = 0;
+        
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                String cur = queue.poll();
+                if (cur.equals(target)) {
+                    return count;
+                }
+                int zeroIndex = cur.indexOf('0');
+                for (int d : dirs[zeroIndex]) {
+                    String next = swap(cur, d, zeroIndex);
+                    
+                    if (!visited.contains(next)) {
+                        queue.offer(next);
+                        visited.add(next);
+                    }
+                    
+                }
+            }
+            count++;
+        }
+        
+        return -1;
+    }
+    
+    private String swap(String cur, int i, int j) {
+        char[] sc = cur.toCharArray();
+        char tmp = sc[i];
+        sc[i] = sc[j];
+        sc[j] = tmp;
+        return new String(sc);
+    
+    }
+```
+ 
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
 但是你也可以反过来想，如果对小根堆只加入k次元素的话，那么这时小根堆就是储存从小到大的k个元素
