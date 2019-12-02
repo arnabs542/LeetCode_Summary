@@ -5014,7 +5014,7 @@ Bfs 网格题，这里先将rotten orange 的位置放入到queue里，然后算
         return matrix;
     }
 ```
-**Open the lock**
+**Open The Lock**
 
 这一题给定一个`target`和一个`String[] deadends`要求从一开始的锁`"0000"`到达target的最短转动的多少次轮能达到？这里要求是最少转动次数，所以我们考虑用`BFS`的`分层遍历`来做，因为这里有`deadends`表示不能到达的死锁位置，要小心一些corner case, 像一开始的`"0000"`或者`target`在这个`deadends`里的话，那就直接返回-1. 在进行BFS的时候，我们要去找到下一个可能的转的次数组合，这里我们呢有一个`getNext`函数帮我们做这个事情，在这个函数里面我们有两个操作，一个是`向上拨号码： sc[i] = (origin + 1) % 10 + '0'`来表示下一个数字是多少，另外的操作就是`向下拨号码： sc[i] = (origin - 1 + 10) % 10 + '0'` 这里`origin`表示的是原来的`sc[i]`， `sc`是当前组合的charArray 形式，最后我们检查这些组合是否不是在`deadends`里面，如果不在就放到下一个可能组合的List里，代码如下:
 ```
@@ -5091,6 +5091,88 @@ Bfs 网格题，这里先将rotten orange 的位置放入到queue里，然后算
         return res;
     }
 ```
+**Cut Off Trees for Golf Event**
+
+这题给定一个`List<List<Integer>> forest`这里有几个数字分别代表不同的意思，`0`代表这里是阻碍，不能通过， `1`代表是陆地，可以通过，`>1`的代表树，也可以通过，这里要求求出最小步数去砍掉所有的树，如果不能砍掉所有的树的话，就返回-1。
+这道题也是跟`01 Matrix`类似，都是要倒着想，我们应该从先从`(0,0)`出发去看最小的步数,然后过了这个点我们可以从砍掉的第一棵树出发去找下一棵树，这里我们需要预处理一下输入，因为树是高低不同的，所以我们先要用`heap`去存入所有树的坐标以及高度，这里我们呢应该按照以小到大的顺序来排。 然后我们以(0,0)为起点去算每一次的到每棵树的最小步数，然后加入到总的步数里面去，这个过程是按`BFS`来做的，然后这里我们是按照如果不能到达所有的数，最小步数会返回`-1`,如果我们发现这个最小步数是`-1`的话就直接返回`-1`， 时间复杂度最差可能要到`O(m^2 * n^2)` 代码如下
+```
+    public int cutOffTree(List<List<Integer>> forest) {
+        
+        if (forest == null || forest.size() == 0) return 0;
+        // sort the height in ascending order
+        // heap saves {i, j, height at (i, j)}
+        PriorityQueue<int[]> queue = new PriorityQueue<>((a, b) -> (a[2] - b[2]));
+        Set<int[]> visited = new HashSet<>();
+        
+        int m = forest.size(), n = forest.get(0).size();
+        
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                // only insert tree into the heap
+                if (forest.get(i).get(j) > 0) {
+                    queue.add(new int[] {i, j, forest.get(i).get(j)});
+                }
+            }
+        }
+        
+        int[] start = new int[2];
+        int sum = 0;
+        while (!queue.isEmpty()) {
+            int[] tree = queue.poll();
+            
+            // BFS process
+            int step = minStep(forest, tree, start, m, n);
+            
+            // if it's impossible to get the valid step return -1
+            if (step < 0) return -1;
+            sum += step;
+            
+            start[0] = tree[0];
+            start[1] = tree[1];
+        }
+        
+        return sum;
+    }
+    // BFS
+    private int minStep(List<List<Integer>> forest, int[] tree, int[] start, int m, int n) {
+        
+        
+        int step = 0;
+        
+        int[] dx = {-1, 1, 0, 0};
+        int[] dy = {0, 0, -1, 1};
+        
+        Queue<int[]> queue = new LinkedList<>();
+        boolean[][] visited = new boolean[m][n];
+        
+        queue.offer(start);
+        visited[start[0]][start[1]] = true;
+        
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] cur = queue.poll();
+                if (cur[0] == tree[0] && cur[1] == tree[1]) return step;
+                
+                for (int k = 0; k < 4; k++) {
+                    int nx = cur[0] + dx[k];
+                    int ny = cur[1] + dy[k];
+                    
+                    if (nx < 0 || nx >= m || ny < 0 || ny >= n || visited[nx][ny] || forest.get(nx).get(ny) == 0) {
+                        continue;
+                    }
+                    
+                    queue.offer(new int[] {nx, ny});
+                    visited[nx][ny] = true;
+                }
+            }
+            step++;
+        }
+        
+        return -1;
+    }
+```
+
 
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
