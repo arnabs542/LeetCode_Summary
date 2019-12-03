@@ -5372,7 +5372,54 @@ swap_indices = {2, 4}
         return -1;
     }
 ```
+**Shortest Path Visiting All Nodes**
+这道题说是给了一个无向图，里面有N个结点，让我们找到一条可以经过所有结点的路径，该路径的起点和终点任意选，只要能经过所有结点即可，这里的每个结点和边都可以重复经过，问这样一条路径的最短长度是多少，注意这里的长度不是路径结点的个数，而是结点中的边的个数。先来想一下，假如这些结点是一字排开的，则最短经过所有结点的路径就类似于遍历链表一样的，但假如这些结点是围绕着一个中心结点的话，比如本题中的例子1，则中心结点会被经过多次，感觉不太好整啊。博主之前说过求极值的问题有两大神器，动态规划 Dynamic Programming 和广度优先搜索 Breadth First Search，这里碰巧两种方法都能解。先来看看 BFS 的解法吧，这种解法最经典的应用是在迷宫问题中，找到起点和终点之间的最短距离，假如把每个位置都看作一个状态的话，BFS 可以推广到更一般的情况。在迷宫中每一步可能会有上下左右四个方向可以选，每走一步其实可以看作是一个状态转移到另一个状态，当到达终点状态时，就可以得到最少步数了。这里也是类似，首先要定义起始状态和终止状态，本题关心的是要经过所有的结点，终止状态就是经过所有结点，起始状态就是只经过了起始结点，那该如何编码这些状态呢？最直接的方法就是把经过的结点放到数组或者 HashSet 中，但是这样的话每次检验是否到达终止状态的时候，都要检测数组或者 HashSet 中是否包含了所有的结点，这会很费时，因为在 BFS 的每一层遍历中都会检测是否到达终止状态。还有就是每个状态是由当前遍历的结点跟当前结点标号组成的，假如把遍历过的结点放到数组或集合中，再跟当前结点标号一起组成 pair 对儿放入队列 queue 中，将会占用大量的空间。
 
+基于以上分析，貌似必须想一种更好的方法来编码遍历过的结点，这里用到了位操作 Bit Manipulation 的技巧，对没使用过的童鞋来说会比较 tricky。对于任意结点i，假如遍历过了，则将其对应位上变为1，即 ‘或’ 上 1<<i，这样每个结点都可以被分别编码进对应位，则遍历过n个结点的十进制数就是 2^n-1 了，只要某个状态的十进制数等于 2^n-1，则表示到达了终止状态。另外，由于最短路径的起点不定，那么这里的 BFS 的起点就应该是所有的结点，将每个结点都当作起始结点，并将结点编号编码到十进制数中，和当前位置一起组成 pair 对儿放进队列中。将n个起点都放入队列之后，就可以开始遍历了，它们都属于同一层，这里进行的是 BFS 的层序遍历的形式。对于每个取出的元素，首先判断取出的状态的 pair 对儿的第一个编码十进制数是否等于最终结果值 target，是的话直接返回结果 res。然后再根据第二个位置值去 graph 数组中查找所有与其相邻的结点，对于每个相邻的结点 next，由于在之前的基础上又加上了结点 next，这也要编码进去，所以要 ‘或’ 上 1<<next，然后在 visted 集合中查找该新状态是否存在，不存在的话加入 visited 集合，并把编码成的十进制数 path 和当前结点编号 next 组成新的 pair 对儿加入队列进行下次遍历。每层遍历结束后记得结果 res 要自增1，while 循环退出后返回 -1，其实根本不会返回 -1，因为题目中是无向连通图，一定会有经过所有结点的路径存在，这里只是怕不写返回值会报错而已，参见代码如下：
+```
+    public int shortestPathLength(int[][] graph) {
+        int N = graph.length;
+        Queue<int[]> queue = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
+        
+        // mask each node visited with 1
+        // visited {"1 : 0"}
+        //         {"2 : 1"}
+        //         {"4 : 2"}
+        //         {"8 : 3"}
+        // target = 2 ^ (N) - 1
+        int target = 0;
+        for (int i = 0; i < graph.length; i++) {
+            int status = (1 << i);
+            target = target | (1 << i);
+            visited.add(status + ":" + i);
+            queue.offer(new int[] {status, i});
+        }
+        int level = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] cur = queue.poll();
+                int curStatus = cur[0], node = cur[1];
+                
+                if (curStatus == target) {
+                    return level;
+                }
+                
+                for (int j = 0; j < graph[node].length; j++) {
+                    int nextNode = graph[node][j];
+                    int nextStatus = curStatus | (1 << (nextNode));
+                    if (visited.contains(nextStatus + ":" + nextNode)) continue;
+                    visited.add(nextStatus + ":" + nextNode);
+                    queue.offer(new int[] {nextStatus, nextNode});
+                }
+            }
+            level++;
+        }
+        
+        return -1;
+    }
+```
 
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
