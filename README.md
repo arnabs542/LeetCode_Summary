@@ -5265,7 +5265,115 @@ swap_indices = {2, 4}
     
     }
 ```
- 
+**Cheapest Flight With K Stops**
+
+题目有一个`int[][] flights`, `src`, `dst`, 以及`K`, 每一个flight是包含起始城市，到达城市，以及价格，题目要求返回从起点到终点所能到达的最小价格，但是这里有多一个要求，这个最小的价格必须是要K站之前结束，这里也是建图加上BFS. 这里因为是要找到最小的价格，所以这里需要分层遍历，我们要去想几个问题，
+```
+1. queue 存什么？
+2. 如何建图？
+3. 如何BFS？
+```
+
+对于每一个问题，首先我们要搞定变量之间的关系，这里我们建图的时候是要`HashMap`将`起始点`当成一个key，然后`{到达城市, 价格}`作为value，这里我们就建好图了，
+之后要考虑的是queue 存的是什么？这里我们可以存一个数组，`{nextCity, priceTillNow}` 然后正常BFS，这里需要注意的坑是graph这里需要判断队列顶的数组中的`nextCity`是否是存在于这个`HashMap`中的，因为不这么做的话会有`NULLPointerException`， 除此之外我们还需要对path进行一个剪枝，像`priceTillNow + graph.get(nextCity)[1] > ans`直接`continue`.这里非常重要，如果没有这个剪枝，就会TLE。 之后我们对queue进行更新的时候是塞入 `{graph.get(nextCity)[0], priceTillNow + graph.get(nextCity)[1]}` 代码如下：
+
+```
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int K) {
+        Map<Integer, List<int[]>> graph = new HashMap<>();
+        
+        // {cur_start, {cur_dst, price}}
+        for (int i = 0; i < flights.length; i++) {
+            int[] f = flights[i];          
+            graph.putIfAbsent(f[0], new ArrayList<>());
+            graph.get(f[0]).add(new int[] {f[1], f[2]});
+        }
+        // queue 存的是 {cur_dst, price}
+        Queue<int[]> queue = new LinkedList<>();
+        
+        int ans = Integer.MAX_VALUE;
+        
+        queue.offer(new int[] {src, 0});
+        int count = 0;
+        while (!queue.isEmpty()) {
+        
+            int size = queue.size();
+            
+            for (int i = 0; i < size; i++) {
+                int[] cur = queue.poll();
+                
+                int stop = cur[0], price = cur[1];
+                
+                if (stop == dst) ans = Math.min(ans, price);
+                
+                if (!graph.containsKey(stop)) continue;
+                
+                
+                for (int[] next : graph.get(stop)) {
+                    // 这里需要剪枝. 否则会TLE
+                    if (price + next[1] > ans) continue;
+                    queue.offer(new int[] {next[0], price + next[1]});
+                    
+                }
+            }
+            
+            // count 控制次数， 如果转机次数大于K次，break出来   
+            if (count++ > K) break;
+        }
+        
+        return ans == Integer.MAX_VALUE ? -1 : ans;
+    }
+```
+
+**Bus Routes**
+题目给定了一个`int[][] routes`表示`route[i] 是第i个bus经过的stop`，然后还有一个`S`表示起点，`T`表示终点，我们要找到最少bus的数量来到达终点，这题容易进的一个误区就是把 routes 直接当作邻接链表来进行图的遍历，其实是不对的，因为 routes 数组的含义是，某个公交所能到达的站点，而不是某个站点所能到达的其他站点。这里出现了两种不同的结点，分别是站点和公交。而 routes 数组建立的是公交和其站点之间的关系，那么应该将反向关系数组也建立出来，即要知道每个站点有哪些公交可以到达。由于这里站点的标号不一定是连续的，所以可以使用 HashMap，建立每个站点和其属于的公交数组之间的映射。由于一个站点可以被多个公交使用，所以要用个数组来保存公交。既然这里求的是最少使用公交的数量，那么就类似迷宫遍历求最短路径的问题，BFS 应该是首先被考虑的解法。用队列 queue 来辅助，首先将起点S排入队列中，然后还需要一个 HashSet 来保存已经遍历过的公交（注意这里思考一下，为啥放的是公交而不是站点，因为统计的是最少需要坐的公交个数，这里一层就相当于一辆公交，最小的层数就是公交数），这些都是 BFS 的标配，应当已经很熟练了。在最开头先判断一下，若起点和终点相同，那么直接返回0，因为根本不用坐公交。否则开始 while 循环，先将结果 res 自增1，因为既然已经上了公交，那么公交个数至少为1，初始化的时候是0。这里使用 BFS 的层序遍历的写法，就是当前所有的结点都当作深度相同的一层，至于为何采用这种倒序遍历的 for 循环写法，是因为之后队列的大小可能变化，放在判断条件中可能会出错。在 for 循环中，先取出队首站点，然后要去 HashMap 中去遍历经过该站点的所有公交，若某个公交已经遍历过了，直接跳过，否则就加入 visited 中。然后去 routes 数组中取出该公交的所有站点，如果有终点，则直接返回结果 res，否则就将站点排入队列中继续遍历，参见代码如下：
+```
+    public int numBusesToDestination(int[][] routes, int S, int T) {
+        
+        Map<Integer, List<Integer>> stop2bus = new HashMap<>();
+        if (S == T) return 0;
+        // {stop, bus}
+        for (int i = 0; i < routes.length; i++) {
+            for (int j = 0; j < routes[i].length; j++) {
+                List<Integer> buses = stop2bus.getOrDefault(routes[i][j], new ArrayList<>());
+                buses.add(i);
+                stop2bus.put(routes[i][j], buses);
+            }
+        }
+        // visited  存的是bus, queue 存的是stop
+        Set<Integer> visited = new HashSet<>();
+        Queue<Integer> queue = new LinkedList<>();
+    
+        queue.offer(S);
+        
+        int step = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            step++;
+            for (int i = 0; i < size; i++) {
+                int stop = queue.poll();
+                
+                List<Integer> buses = stop2bus.get(stop);
+                for (int bus : buses) {
+                    if (!visited.contains(bus)) {
+                        
+                        visited.add(bus);
+                        // 对于每一个bus route 来讲，要去看周围所有的stops,  同时要去看这里stop是否已经到达终点了
+                        for (int j = 0; j < routes[bus].length; j++) {
+                            if (routes[bus][j] == T) return step;
+                            
+                            queue.offer(routes[bus][j]);
+                        }
+                    }
+                }
+            }
+            
+        }
+        
+        return -1;
+    }
+```
+
+
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
 但是你也可以反过来想，如果对小根堆只加入k次元素的话，那么这时小根堆就是储存从小到大的k个元素
