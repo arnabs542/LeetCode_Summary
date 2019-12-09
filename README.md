@@ -4250,15 +4250,16 @@ BST + Inorder
 
 最后重新遍历一下二叉树，遇到不合法的将之前调整好顺序的数字放回去就好
 
-116. Populating Next Right Pointers in Each Node
+**116. Populating Next Right Pointers in Each Node**
 preorder 遍历
 root.left.next → root.right | root.left != null
 root.right.next → root.next.left | root.next != null && root.right != null
-117 Populating Next Right Pointers in Each Node 非满二叉树
+
+**117 Populating Next Right Pointers in Each Node** 非满二叉树
 
 
 
-501 Find Mode in Binary Tree
+**501 Find Mode in Binary Tree**
 
 思路是将利用HashMap 和一个global max 变量，将中序遍历中每一个数字记好，并且将这个数字出现的次数和max去比，直到找到出现次数最多的几个数字，
 然后遍历这个map的keySet, 当key出现的次数多于1次的时候，需要将这个加入到list 里面并且，将这个list转成integer array
@@ -4354,7 +4355,7 @@ Word Search也是一道深度优先搜索的题目，是把上下左右相邻的
 Surrounded Regions要用一个图形学中很常用的填充算法：Flood fill 算法，其实本质还是一个深度优先搜索，跟Word Search一样是把相邻的上下左右看成连边，然后进行搜索填充。
 
 图的问题其实本质都是两种搜索算法，难点主要在于对于具体问题如何想到转换成图的问题，然后用这两种搜索来解决，这也是算法中的一个分支，面试中也是常客哈。
- Is Graph Bipartite
+**Is Graph Bipartite**
 这个是二分图染色的模板题
 通过黑白染色我们可以判断一个无向图是否二分图:
 
@@ -4362,19 +4363,19 @@ Surrounded Regions要用一个图形学中很常用的填充算法：Flood fill 
 可以用BFS或DFS来实现, 只需要根据当前节点的颜色设定下一个节点的颜色即可, 如果下一个节点已经被染成了相同的颜色, 说明发生了冲突.
 
 迷宫型的图上搜索，
-490 The Maze 
+**490 The Maze**
 
 这里就是迷宫，但是不是走一步，而是要不停走直到撞墙， 最后如果能到destination 就可以返回true， 否则返回false
 时间复杂度？ 这里的时间复杂度为 O(m * n *k) 因为在最差的case内，每个格子都要走一遍, 每个格子都要去转成1
 空间复杂度？ 这里的空间复杂度为O(m * n)
 
-505 The Maze II
+**505 The Maze II**
 
 这里跟迷宫I 差不多，但是要返回的是最短的步数，这里就是要多一个len field在你的 Point class里表示的是一个步数的长度，而还需要一个val Maze 2d数组 来记录我每一个cell 的当前步数，这里每当我的当前点的步数要大于或等于当前的valMaze 的cell的步数，continue 然后设这个cell 的步数
 时间复杂度？surrounded 
 O（m * n）
 
-499 The Maze III
+**499 The Maze III**
 这里比迷宫III 更复杂， 这里的要求是说我们现在迷宫有个球还有个洞，然后这个球呢需要到达这个洞里，那么怎么在The Maze II 的基础上再加上一层，这就牵涉到我们point的定义了，
 
 坑一：在这里point 的定义指的是我们不仅有x，y，和len，我们还有多一个String 叫path，代表了当前cell的路径是怎么样的。 
@@ -4387,23 +4388,23 @@ O（m * n）
 
 其他的话就基本跟The Maze差不多，因为这里还有一个点是res是一个Point矩阵了，每次都是更新这个cell上的Point 
 
-286. Walls and Gates
+**286. Walls and Gates**
 这里用的Flood Fill 思想，每次的我看到gate的时候我向外扩张，只要遇到不是-1 的点，那么我就填上当前的步数和，如果不是的话我们就返回一个值，然后recusion向四个方向扩张
 
 也可以用两个Queue 一个代表x 一个代表y来做
 
-743. Network Delay Time
+**743. Network Delay Time**
 这道题是一个Dijkstra 的模板题， Dijkstra算法是经典的求解一个顶点到其他顶点的最短距离的算法， 这里我们要理解Dijkstra 的意思
 设置起点v
 审视参考以前去过的路径，找出可以到达没去过顶点的所有路径
 若有，则选择其中代价最小的路径。并标记本次去过的顶点，执行步骤2
 若没有，则结束
 
-953. Regions Cut By Slashes
+**953. Regions Cut By Slashes**
 Union-Find 
 
 
-332. Reconstruct Itinerary
+**332. Reconstruct Itinerary**
 See also here
 All the airports are vertices and tickets are directed edges. Then all these tickets form a directed graph.
 The graph must be Eulerian since we know that a Eulerian path exists.
@@ -4412,14 +4413,14 @@ Since the problem asks for lexical order smallest solution, we can put the neigh
 DFS 递归找从Heap所有的City 的neighbors
 但是这里因为用的是最小根，所以最后需要倒序
 
-694. Number of Distinct Islands
+**694. Number of Distinct Islands**
 这里unique island 的定义指的是当两个island 形状不相同都可以算作是unique islands
 那么当我们在想的时候，我们需要做什么？
 首先1的个数要相同，但是形状不同的话就算作是不同的岛屿即使1的个数一样，那么这里就可以用到点的相对位置来计算，也就是说我算【基点---右边的点---下面的点---左边的点】就可以出来到底这两个岛屿是否相同。 这里用什么来存，用HashSet 来存这个岛屿的相对位置，利用它自身的除重的特性就可以来做
 
  
 6. 图的转化思想(隐士图) 小结
-127 Word Ladder
+**127 Word Ladder**
 这里不像是一个图的问题，但实际上这里是一个hidden的graph的问题，我们可以去建立一个图，也可以不建一个图，这里找的是最短距离，这里就是要用BFS/Bi-BFS, 就为了找最短距离，这里有个转化不同单词的小Trick： 咱们不是有一个个单词吧，然后可以通过toCharArray()d来转成新的单词，然后每一个新单词去wordDict里面去验证,然后继续BFS
 
 然后每次遍历更新这个转换次数， 直到到达终点返回这个转换次数，然后这个如果不能达到终点，返回-1
@@ -4428,7 +4429,7 @@ DFS 递归找从Heap所有的City 的neighbors
 
 
 
-399 Evaluate Division
+**399 Evaluate Division**
 这里是一个数学问题，但是这里可以用图的思想来做，
 这里我们有一个Equations 的double List，然后有一个对应的结果值，这里要求的是根据我们的query，这里的新的结果是什么
 
@@ -4438,7 +4439,7 @@ DFS 递归找从Heap所有的City 的neighbors
 
 当图建好后，如何去遍历？BFS/DFS 即可，新建一个double数组，每个cell通过DFS 算出这个当前的value 乘以valueMap的当前的value，
 
-126 Word Ladder II
+**126 Word Ladder II**
 这一题比127要复杂很多，因为他是要求输出所有可能路径的单词组成，所以我们要去先用BFS来找到所有的从出发到结束的就最短距离，然后将每一个单词的neighbor加入到HashMap中
 
 2). Use DFS to output paths with the same distance as the shortest distance from distance HashMap: compare if the distance of the next level node equals the distance of the current node + 1.
@@ -4566,7 +4567,7 @@ use 3 flips method, first find the changed point where the previous number is bi
 so we can return the whole thing flipped in-place
 
 ---------------------------End of Two Pointer Algorithm-------------------
-Remove Duplicate Letters
+**Remove Duplicate Letters**
 用一个栈来维护答案，从左往右扫描字符串，当栈顶元素字典序小于当前扫描的字符，并且栈顶元素在s未被扫描到的部分中还有出现时，栈顶元素出栈，并继续比较新的栈顶元素与当前字符字符，重复上面的过程，直到不符合上述条件时，再让当前字符入栈。最后答案就是栈底到栈顶元素组成的字符串。
 
 String Multiplication/Multiply String
