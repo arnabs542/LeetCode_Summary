@@ -5421,6 +5421,61 @@ swap_indices = {2, 4}
         return -1;
     }
 ```
+**All Nodes Distance K in Binary Tree**
+题目给定一个树`root`，一个目标节点`target`，要求找到所有离目标节点距离为`K` 的节点
+这一题是用了BFS和HashMap，这里HashMap存的是对应节点的所有父节点，因为这里是一个树的结构，结构是非环形并且不能够返回去找这个父节点，所以我们要先建立一个相邻表，用任何DFS 的任意顺序建图，因为我们知道了target，所以这里可以从target 来进行BFS 搜索，当我们的距离用完时，我们更新我们的结果，然后我们依节点通过HashMap找到所有跟它相邻的节点，再进行正常的BFS操作, 代码如下
+```
+    Map<TreeNode, List<TreeNode>> map;
+    public List<Integer> distanceK(TreeNode root, TreeNode target, int K) {
+        map = new HashMap<>();
+        
+        dfs(root, null);
+        if (!map.containsKey(target)) { return new ArrayList<>(); }
+        Queue<TreeNode> queue = new LinkedList<>();
+        Set<TreeNode> seen = new HashSet<>();
+        
+        queue.offer(target);
+        seen.add(target);
+        
+        List<Integer> res = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            if (K == 0) {
+                for (int i = 0; i < size; i++) {
+                    res.add(queue.poll().val);
+                }
+                return res;
+            }
+            for (int i = 0; i < size; i++) {
+                TreeNode cur = queue.poll();
+                for (TreeNode next : map.get(cur)) {
+                    if (seen.contains(next)) continue;
+                    queue.offer(next);
+                    seen.add(next);
+                }
+            }
+            K--;
+        }
+        
+        return res;
+    }
+    
+    private void dfs(TreeNode node, TreeNode parent) {
+        if (node == null) return;
+        
+        if (!map.containsKey(node)) {
+            map.put(node, new ArrayList<TreeNode>());
+            if (parent != null) {
+                map.get(node).add(parent);
+                map.get(parent).add(node);
+            }
+            dfs(node.left, node);
+            dfs(node.right, node);
+        }
+    }
+```
+
+
 
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
