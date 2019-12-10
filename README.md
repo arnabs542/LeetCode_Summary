@@ -5474,7 +5474,62 @@ swap_indices = {2, 4}
         }
     }
 ```
+**Snakes and Ladders**
+求最小值还有一大神器，广度优先搜索 BFS，最直接的应用就是在迷宫遍历的问题中，求从起点到终点的最少步数，也可以用在更 general 的场景，只要是存在确定的状态转移的方式，可能也可以使用。这道题基本就是类似迷宫遍历的问题，可以走的1到6步可以当作六个方向，这样就可以看作是一个迷宫了，唯一要特殊处理的就是遇见梯子的情况，要跳到另一个位置。这道题还有另一个难点，就是数字标号和数组的二维坐标的转换，这里起始点是在二维数组的左下角，且是1，而代码中定义的二维数组的 (0, 0) 点是在左上角，需要转换一下，还有就是这道题的数字是蛇形环绕的，即当行号是奇数的时候，是从右往左遍历的，转换的时候要注意一下。
 
+难点基本都提到了，现在开始写代码吧，既然是 BFS，就需要用队列 queue 来辅助，初始时将数字1放入，然后还需要一个 visited 数组，大小为 nxn+1。在 while 循环中进行层序遍历，取出队首数字，判断若等于 nxn 直接返回结果 res。否则就要遍历1到6内的所有数字i，则 num+i 就是下一步要走的距离，需要将其转为数组的二维坐标位置，这个操作放到一个单独的子函数中，后边再讲。有了数组的坐标，就可以看该位置上是否有梯子，有的话，需要换成梯子能到达的位置，没有的话还是用 num+i。有了下一个位置，再看 visited 中的值，若已经访问过了直接跳过，否则标记为 true，并且加入队列 queue 中即可，若 while 循环退出了，表示无法到达终点，返回 -1。将数字标号转为二维坐标位置的子函数也不算难，首先应将数字标号减1，因为这里是从1开始的，而代码中的二维坐标是从0开始的，然后除以n得到横坐标，对n取余得到纵坐标。但这里得到的横纵坐标都还不是正确的，因为前面说了数字标记是蛇形环绕的，当行号是奇数的时候，列数需要翻转一下，即用 n-1 减去当前列数。又因为代码中的二维数组起点位置在左上角，同样需要翻转一样，这样得到的才是正确的横纵坐标，返回即可，参见代码如下：
+
+
+```
+    int N;
+    public int snakesAndLadders(int[][] board) {
+        this.N = board.length;
+        
+        // {cur square number, distance to get to the cur square number}
+        Map<Integer, Integer> dist =  new HashMap<>();
+        
+        dist.put(1, 0);
+        
+        Queue<Integer> queue = new LinkedList<>();
+        
+        queue.offer(1);
+        
+        int step = 0;
+        
+        while (!queue.isEmpty()) {
+            int cur = queue.poll();
+            if (cur == N * N) { return step; }
+            
+            for (int s2 = cur + 1; s2 <= Math.min(cur + 6, N * N); s2++) {
+                int rc = get(s2, N);
+                int r = rc / N, c = rc % N;
+                int next = board[r][c] == -1 ? s2 : board[r][c];
+                
+                if (!dist.containsKey(next)) {
+                    dist.put(next, dist.get(cur) + 1);
+                    queue.offer(next);
+                }
+            }
+            step++;
+        }
+        
+        return -1;
+    }
+    
+    private int get(int cur, int N) {
+        // 将一维转二维
+        int curR = (cur - 1) / N;
+        int curC = (cur - 1) % N;
+        
+        //真实的坐标和这里算出来的curR 和 curC 是反着的
+        int row = N - 1 - curR;
+        
+        int col = row % 2 != N % 2 ? curC : N - 1 - curC;
+        
+        // 将二维转1维
+        return row * N + col;
+    }
+```
 
 
 ## PriorityQueue 小结
