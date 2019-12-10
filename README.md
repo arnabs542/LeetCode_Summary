@@ -5531,6 +5531,79 @@ swap_indices = {2, 4}
     }
 ```
 
+**Shortest Bridge**
+题目给了一二维矩阵 `0`和`1`， 通过翻转0到1的方式来连接两个岛屿，要求找到最小的翻转次数
+这一道题我一开始想到只是用BFS 来找步数，而正确的方法是先通过dfs 来找到另一个岛屿然后将坐标塞进queue里面，然后标记这里的坐标为已经找到了，这里是dfs 和bfs的一并用，有一个小细节要注意，在BFS找新的坐标时，在得到新的坐标之后要去检查是否已经到新的岛屿了，如果是，那么就直接返回新的步数，代码如下：
+```
+    int[] dx = {-1, 1, 0, 0};
+    int[] dy = {0, 0, -1, 1};
+    
+    public int shortestBridge(int[][] A) {
+        int m = A.length, n = A[0].length;
+        
+        boolean found = false;
+        
+        Queue<int[]> queue = new LinkedList<>();
+        
+        boolean[][] seen = new boolean[m][n];
+        
+        // 用dfs 来找另一个岛屿
+        for (int i = 0; i < m; i++) {
+            if (found) {
+                break;
+            }
+            
+            for (int j = 0; j < n; j++) {
+                if (A[i][j] == 1) {
+                    dfs(A, i, j, queue, seen);
+                    found = true;
+                    break;
+                }
+            }
+        }
+        
+        // 用BFS 来找步数
+        int step = 0;
+        
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] cur = queue.poll();
+                
+                for (int k = 0; k < 4; k++) {
+                    int nx = cur[0] + dx[k];
+                    int ny = cur[1] + dy[k];
+                    
+                    if (nx >= 0 && nx < m && ny >= 0 && ny < n && !seen[nx][ny]) {
+                        if (A[nx][ny] == 1) {
+                            return step;
+                        }
+                        queue.offer(new int[] {nx, ny});
+                        seen[nx][ny] = true;
+                    }
+                }
+            }
+            step++;
+        }
+        
+        return -1;
+    }
+    // 通过dfs 找到另一个岛屿
+    private void dfs(int[][] A, int i, int j, Queue<int[]> queue, boolean[][] seen) {
+        // 判断非法
+        if (i < 0 || i >= A.length || j < 0 || j >= A[0].length || seen[i][j] || A[i][j] == 0) {
+            return;
+        }
+        
+        queue.offer(new int[] {i, j});
+        seen[i][j] = true;
+        
+        for (int k = 0; k < 4; k++) {
+            dfs(A, i + dx[k], j + dy[k], queue, seen);
+        }
+    }
+```
+
 
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
