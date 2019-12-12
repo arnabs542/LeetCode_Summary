@@ -5603,7 +5603,51 @@ swap_indices = {2, 4}
         }
     }
 ```
+**Minimum Knight Moves**
+The problem statement asks us to find minimum number of moves to reach a target position {x,y} on an infinite chessboard from {0,0}. The key point to observe here is that we can reduce this to graph. Each position on the board can be thought of as a node. Edges can be thought of as possible moves for a knight from one position to other. This leads to an undirected uniform weighted graph. Thus the shortest distance to the target position is our answer. Since the graph is undirected and has uniform weights we can use bfs to calculate the answer.
 
+Algorithm:
+Start from {0,0}. The distance to {0,0} here is 0. Add this position to queue.
+Keep performing BFS from each point present in the queue. At each step poll a point and explore all 8 possible tiles where the knight can land and add those points to the queue if not visited.
+Thus each point reaches one more hop to the neighbor. And eventually reaches the target node.
+```
+    int[][] dirs = {{-2,-1},{-1,-2},{1,2},{2,1},{2,-1},{1,-2},{-2,1},{-1,2}};
+    public int minKnightMoves(int x, int y) {
+        Queue<int[]> queue = new LinkedList<>();
+        Map<Integer, HashMap<Integer, Integer>> visited = new HashMap<>();
+        
+        queue.offer(new int[] {0, 0});
+        int step = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        
+        map.put(0, 0);
+        
+        visited.put(0, map);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] cur = queue.poll();
+                if (cur[0] == x && cur[1] == y) {
+                    return visited.get(cur[0]).get(cur[1]);
+                }
+                
+                for (int[] dir : dirs) {
+                    int nx = cur[0] + dir[0];
+                    int ny = cur[1] + dir[1];
+                    int dist = visited.get(cur[0]).get(cur[1]) + 1;
+                    if (!visited.containsKey(nx)) {
+                        visited.put(nx, new HashMap<>());
+                    }
+                    
+                    visited.get(nx).put(ny, dist);
+                    queue.offer(new int[]{nx, ny});
+                }
+            }
+        }
+        
+        return -1;
+    }
+```
 
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
