@@ -5703,6 +5703,49 @@ Thus each point reaches one more hop to the neighbor. And eventually reaches the
     }
 ```
 
+**As Far from Land as Possible**
+这题也是要反着想，如果要找一个water cell 距离最近岛屿距离最长，要先找到每一个岛屿的坐标，并且从每一个岛屿同时出发,BFS去找最大的距离，这里我们在更新距离的时候应该是`grid[newX][newY] = grid[oldX][oldY] + 1`，这里`grid[i][j] 代表的是离最近岛屿(i, j)的距离 + 1`,为什么？ 假设我们有一个water cell 就挨着岛屿，这里的距离应该是1， 但是在记录的时候我们是将其记录为2，所以再算答案的时候是要减去1，其他的跟模板差不多，代码如下：
+```
+    public int maxDistance(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        Queue<int[]> queue = new LinkedList<>();
+        boolean[][] seen = new boolean[m][n];
+        
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    queue.offer(new int[]{i, j});
+                    seen[i][j] = true;
+                }
+            }
+        }
+        
+        int[] dx = {-1, 1, 0, 0};
+        int[] dy = {0, 0, -1, 1};
+        int step = -1;
+        
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] cur = queue.poll();
+                step = Math.max(step, grid[cur[0]][cur[1]] - 1);
+                for (int k = 0; k < 4; k++) {
+                    int nx = cur[0] + dx[k];
+                    int ny = cur[1] + dy[k];
+                    if (nx >= 0 && nx < m && ny >= 0 && ny < n && !seen[nx][ny]) {
+                        grid[nx][ny] = grid[cur[0]][cur[1]] + 1;
+                        seen[nx][ny] = true;
+                        queue.offer(new int[]{nx, ny});
+                    }
+                }
+            }
+        }
+        
+        return step == 0 ? -1 : step;
+    }
+```
+
+
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
 但是你也可以反过来想，如果对小根堆只加入k次元素的话，那么这时小根堆就是储存从小到大的k个元素
