@@ -5649,6 +5649,60 @@ Thus each point reaches one more hop to the neighbor. And eventually reaches the
     }
 ```
 
+**Escape a Large Maze**
+这题不能用简单的brute force寻找，因为这里search space太大，那么怎么去想怎么判断？这么去找到一个提前可以退出的条件？也就是怎么去找到最大面积，用trapezoid sum 来做可以找到这个最大面积， 面积的计算公式为
+```
+0th     _________________________       The sum of the area available equals 1+2+3+4+5+...+198+199=(1+199)*199/2=19900 (trapezoid sum) 
+         |-------------------- X            
+         |-------------------X
+         |                .
+         |             .
+         .           . 
+         .        X
+         .    X
+200      | X
+```
+代码如下：
+```
+    public boolean isEscapePossible(int[][] blocked, int[] source, int[] target) {
+        Set<String> blockedSet = new HashSet<>();
+        for (int[] b : blocked) {
+            blockedSet.add(b[0] + ":" + b[1]);
+        }
+        
+        return bfs(source, target, blockedSet) && bfs(target, source, blockedSet);
+    }
+    private boolean bfs(int[] source, int[] target, Set<String> blockedSet) {
+        Queue<int[]> queue = new LinkedList<>();
+        Set<String> seen = new HashSet<>();
+        
+        queue.offer(source);
+        seen.add(source[0] + ":" + source[1]);
+        int[] dx = {-1, 1, 0, 0};
+        int[] dy = {0, 0, -1, 1};
+        while (!queue.isEmpty()) {
+            int[] cur = queue.poll();
+            
+            int blockedNum = 0;
+            for (int k = 0; k < 4; k++) {
+                int nx = cur[0] + dx[k];
+                int ny = cur[1] + dy[k];
+                
+                int[] newPair = new int[]{nx, ny};
+                String key = nx + ":" + ny;
+                if (nx < 0 || nx >= 1e6 || ny < 0 || ny >= 1e6) continue;
+                if (seen.contains(key) || blockedSet.contains(key)) continue;
+                if (newPair[0] == target[0] && newPair[1] == target[1]) return true;
+                queue.add(newPair);
+                seen.add(key);
+            }
+            // if the seen size is equal to the 2e4 then return True
+            if (seen.size() == 20000) return true;
+        }
+        return false;
+    }
+```
+
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
 但是你也可以反过来想，如果对小根堆只加入k次元素的话，那么这时小根堆就是储存从小到大的k个元素
