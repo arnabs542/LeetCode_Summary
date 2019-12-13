@@ -5744,7 +5744,44 @@ Thus each point reaches one more hop to the neighbor. And eventually reaches the
         return step == 0 ? -1 : step;
     }
 ```
-
+**Shortest Path in Binary Matrix***
+这里是经典BFS分层遍历实现，要求求最小的路径，每一次层数如果达到退出要求的话，第一个返回值就是最短路，最后要返回`step + 1`,因为这里是step表示的是最小步数，也就是一开始的初始化为1。代码如下:
+```
+    public int shortestPathBinaryMatrix(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        Queue<int[]> queue = new LinkedList<>();
+        boolean[][] seen = new boolean[m][n];
+        
+        queue.offer(new int[]{0, 0});
+        seen[0][0] = true;
+        int step = 0;
+        
+        int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0},{1,-1},{-1,1},{-1,-1},{1,1}};
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] cur = queue.poll();
+                if (cur[0] == m - 1 && cur[1] == n - 1) {
+                    return step + 1;
+                }
+                
+                for (int[] dir : dirs) {
+                    int nx = cur[0] + dir[0];
+                    int ny = cur[1] + dir[1];
+                    
+                    if (nx >= 0 && nx < m && ny >= 0 && ny < n && !seen[nx][ny] && grid[nx][ny] == 0) {
+                        seen[nx][ny] = true;
+                        queue.offer(new int[]{nx, ny});
+                    }
+                }
+                
+            }
+            step++;
+        }
+        
+        return -1;
+    }
+```
 
 ## PriorityQueue 小结
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
