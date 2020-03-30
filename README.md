@@ -2139,14 +2139,14 @@ ans =2 exit since t = target.length()
  这里可以用recursion 来做,注意这里如果power是负数，就需要设p为负数，然后将x设为倒数
 整体时间复杂度为O(logn)
  
- **3sum closet**
+ **3 Sum closet**
  这里用的双指针, 在做任何动作之前，我们先要将数组排序，排序完之后我们有了一个有序的数组，然后从0到i-2遍历一遍数组，这时候我们有另一个指针 `l = i + 1` 和 `r = nums.length - 1` 这里的l 和 r 的作用是来找到3个数之和也就是 `sum = nums[i] + nums[l] + nums[r]` 如果 `sum > target` 那么我们的`r`需要减少，反之，`l` 需要增加，不断通过扫数组去找到最小的，也就是最closet的`sum`
  
- **3Sum Smaller**
+ **3 Sum Smaller**
  这里可以将`2Sum smaller`的思想imply 到这里，我们可以有一个`i` 指针从0到`nums.length - 2` 一直遍历，每次`left = i + 1, r = nums.length - 1` 可以用这三个指针表示当前的和，然后用这个当前的和去和`target` 比较，如果是小于`target`，那么这里的答案可以更新为`ans += r - l` 因为这里是一个窗口来走，同时可以更新`left` 指针， 反之更新`right` 指针
  
  
- **3Sum Template**
+ **3 Sum Template**
  ```
   public function(int[] nums, int target) {
    Arrays.sort(nums); // sort the array first so we know which is bigger/smaller
