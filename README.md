@@ -2145,6 +2145,33 @@ ans =2 exit since t = target.length()
  **3Sum Smaller**
  这里可以将`2Sum smaller`的思想imply 到这里，我们可以有一个`i` 指针从0到`nums.length - 2` 一直遍历，每次`left = i + 1, r = nums.length - 1` 可以用这三个指针表示当前的和，然后用这个当前的和去和`target` 比较，如果是小于`target`，那么这里的答案可以更新为`ans += r - l` 因为这里是一个窗口来走，同时可以更新`left` 指针， 反之更新`right` 指针
  
+ 
+ **3Sum Template**
+ ```
+  public function(int[] nums, int target) {
+   Arrays.sort(nums); // sort the array first so we know which is bigger/smaller
+   int ans = 0;       // set up the answer for the question could be any data type/structure 
+   for (int i = 0; i < nums.length - 2; i++) { // the limit of i is set to here since we would use right pointer to be last element at first and left pointer will eventually goes to nums.length - 1, doing so would avoid reuse of the inices 
+     int l = i + 1;  
+     int r = nums.length - 1; // left and right pointers initialized
+     int curTarget = [];      // curTarget is the target you want to use for the comparison of the sum of nums[l] and nums[r]
+                              // it only needs when the question implies
+     while (l < r) {
+       int sum = nums[l] + nums[r];
+       if (sum < target or curTarget) { // perform whatever you want to compare the sum with the target or curTarget
+          // perform updates on the answer or anything here
+          l++; // move the left pointer to right
+       } else {
+          // perform updates on the answer or anything here
+          r--; // move the right  pointer to left
+       }
+     }
+    }
+    
+    return ans;
+  }
+ ```
+ 
  **Move Zeros**
  这里我们用一个 `index` 来记录所有非零的元素，然后我的所有非零的元素就是放到`nums[index]` 的位置上来，最后我们从 `index` 到 `nums.length - 1` 全是0
  
