@@ -2172,6 +2172,9 @@ ans =2 exit since t = target.length()
   }
  ```
  
+ **Partition Labels**
+这里我们用一个Array ``Last``来记每个characer最后出现过的索引，然后进行第二遍扫描，这次我们要准备两个pointer, ``start``和
+``end`` 然后每次拓展end的范围用``Math.max(end, last[S.charAt(i))``然后如果``i == end`` 就进行切割，
  **Move Zeros**
  这里我们用一个 `index` 来记录所有非零的元素，然后我的所有非零的元素就是放到`nums[index]` 的位置上来，最后我们从 `index` 到 `nums.length - 1` 全是0
  
