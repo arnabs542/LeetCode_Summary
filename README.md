@@ -5865,6 +5865,30 @@ PriorityQueue
 
 Binary Search 二分法小结
 []
+## 区间题小结
+**[Leetcode] 56 Merge Intervals**
+这题需要先给数组排序根据interval开始节点呈升序，然后利用lowest endpoint的关系找能够merge的点，这个代码体现为
+``
+cur = intervals[i]
+cur = intervals[i + 1]
+int lo = Math.max(cur[0], next[0]);
+int hi = Math.min(cur[1], next[1]);
+``
+然后根据``lo <= hi`` 来决定这个cur 和 next 段可以merge，如果``lo > hi``这两段不能merge，那么就直接加 cur 然后更新cur 为 next， 
+
+**[Leetcode] 986 Interval List Intersections**
+用的也是lowest endpoint 的关系来找可以merge的点，这里直接加上common segment 
+``
+int lo = Math.max(A[i][0], B[i][0]);
+int hi = Math.min(A[i][1], B[i][1]);
+if (low <= hi) {
+                ans.add(new int[] {low, hi});
+}
+
+``
+然后我们根据区间的右端点来判断移动哪一个array 的指针
+
+
 
 ## DFS 算法小结
 
