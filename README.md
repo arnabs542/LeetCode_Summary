@@ -5888,7 +5888,19 @@ if (low <= hi) {
 ``
 然后我们根据区间的右端点来判断移动哪一个array 的指针
 
+## 区间题--TreeMap 应用
+TreeMap 的应用在区间的是用来记录每一个区间的start 和 end 作为key， 然后TreeMap的value是这样定义的，当我们遇到start时，TreeMap value 加1，遇到end时，TreeMap value 减一； 然后怎样判断区间们重叠不重叠我们需要一个`rooms` 来作为values 的总和， 如果`rooms`超过1，代表这个区间重叠了； 找到最少需要的不重叠的区间数目？我们不仅需要`rooms`我们还需要一个`ans`来跟`rooms`做比较看那个最大，最后我们的ans就代表最少不重叠的区间数
+TreeMap有一个坏处就是空间利用太多，很多时候可以考虑用之前提到过的 `low high`来省空间
 
+**252 Meeting Room** 
+这题用的TreeMap和`rooms` 来判断是否已经重叠了，如果`rooms`超过1，那么直接返回`false` 因为时间区间重叠
+**253 Meeting Room II**
+这题用`rooms`和`ans`来找最少的conference rooms 每次比较二者的较大值，最后出来的就是最少conference 的个数
+**729 My Calendar**
+这题可以用brute force的 `low high` 区间模板来判断是否重叠，如果用的是`TreeMap`的话，就用`rooms`是否已经大于1来判断重叠，如果是那么判断时间重叠，但是这里还需要将不合法的`start`和 `end`对应的value数进行删除, 也就是说之前加`start` 的`value` 相对应`减去1`； 之前加`end`的`value`相对应加上`1`
+
+**731 My Calendar II**
+**732 My Calendar III**
 
 ## DFS 算法小结
 
