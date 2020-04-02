@@ -1162,21 +1162,21 @@ Public class Solution {
 Private void partition(int[] nums, int pivot) {
     Int l = 0, r = nums.length - 1;
     While (l <= r) {
-    While (l <= r && nums[l] < pivot) {
-    i++;
-}
+     While (l <= r && nums[l] < pivot) {
+         l++;
+     }
 
-While (l <= r && nums[r] >= pivot) {
-    j--;
-}
+     While (l <= r && nums[r] >= pivot) {
+         r--;
+     }
 
-If (i <= j) {
-    Int temp = nums[i];
-    Nums[i] = nums[j];
-    Nums[j] = temp;
-}
-}
-}
+     If (l <= r) {
+         Int temp = nums[l];
+         nums[l] = nums[r];
+         nums[r] = temp;
+     }
+   }
+ }
 }
 ```
 Find Minimum in Rotated Sorted Array
