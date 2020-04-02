@@ -1181,7 +1181,7 @@ Private void partition(int[] nums, int pivot) {
 ```
 Find Minimum in Rotated Sorted Array
 Sorted, find minimum… classic binary search problem
-
+```
 [0, 1, 2, 3, 4, 5, 6, 7]
 May become
 [4, 5, 6, 7, 0, 1, 2]
@@ -1198,7 +1198,7 @@ May become
           l  r
 Nums[l] > endValue → not nums[l]
 Return nums[r] → 0 which is correct 
-
+```
 
 Initialized Target value would be nums[r] == 2
 And check if nums[mid] is  smaller/bigger than target
@@ -1207,30 +1207,30 @@ And the end only the l and r hasn’t been evaluated
 If the nums[l] <= target, return nums[l]
 
 Return nums[r] at the end
-
+```
 Public class Solution {
     Public int findMinimum(int[] nums) {
-    Int l = 0;
-    Int r = nums.length - 1;
-    Int target = nums[r];
+      int l = 0;
+      int r = nums.length - 1;
+      int target = nums[r];
 
-    While (l + 1 < r) {
-    Int mid = l + (r - l) / 2;
-    If (nums[mid] > target) {
-    L = mid;
-} else {
-    R = mid;
-}
-}
+      while (l + 1 < r) {
+       int mid = l + (r - l) / 2;
+       if (nums[mid] > target) {
+       l = mid;
+       } else {
+           r = mid;
+       }
+      }
 
-If (nums[l] <= target) {
-    Return nums[l];
-}
+      if (nums[l] <= target) {
+          Return nums[l];
+      }
 
-Return nums[r];
+      Return nums[r];
+    }
 }
-}
-
+```
 
 Find Minimum in Rotated Sorted Array
 Duplicates exist, so to resolve that we might need to remove the duplicate or think about a new approach instead of binary search
@@ -1246,7 +1246,7 @@ If you find the target word is after what your current open page, move your left
  If the target word is before what your current open page, move your right hand!
 
 Search a 2D matrix II
-
+```
 [
       [1, 3, 5, 7],
       [2, 4, 7, 8],
@@ -1258,12 +1258,12 @@ Search a 2D matrix II
 Find the median of two sorted arrays
 [1 3 7 8 18]
 [2 9 12 25]
-
+```
 Solution 1. Merge the two sorted lists together, and to find the median
 1 2 3 7 8 9 12 18 25
 
 But how could we find the median without merging it?
-
+```
 Solution 2. 
 Find the median of two sorted array
 [1 3 7 8 18]
@@ -1272,7 +1272,7 @@ Find the median of two sorted array
 1 way to think of is to merge two sorted list together, 
 So the list would be 
 [1, 2, 3, 7, 8, 9, 12, 18, 25] 
-
+```
 But how do we know the median without merging?
 
 So if we can find a cut where max[array1 left] < min[array2 right] && min[array1 right] > max[array2 left]
