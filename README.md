@@ -1124,7 +1124,7 @@ Solution 1. Brute force
         And overwrite the array with the numbers
         O(N^2) Space: O(1)
 Solution 2. Use partition twice, 
-[2, 0, 2, 1, 1, 0]
+``[2, 0, 2, 1, 1, 0]
           ^
 [1, 0, 0, 1, 2, 2]
 first partition would be choosing 1 as the pivot, but we still need another partition since right now we only partition the 1s and 2s. So now we could use 2 as pivot, so those 0s and 1s would be grouped correctly
@@ -1140,6 +1140,7 @@ Exchange
 [0, 0, 2, 1, 1, 2]
     ^        ^
     L        r
+``
 Continuously check if nums[l] < nums[r], given l is still smaller than r
 While checking, do two whiles loops inside
 First while loop → Move the left pointer to right if the nums[l] is still smaller than the pivot → find the first number greater than pivot
@@ -1148,6 +1149,7 @@ Second while loop → Move the right pointer to the left if the nums[r] is still
 Any nums[l] and nums[r] that are not qualified, swap the their values and move the left and right pointers
 
 Language: JAVA
+``
 Public class Solution {
     Public void sortColors(int[] nums) {
         If (nums == null || nums.length == 0) return;
@@ -1175,7 +1177,7 @@ If (i <= j) {
 }
 }
 }
-
+``
 Find Minimum in Rotated Sorted Array
 Sorted, find minimum… classic binary search problem
 
