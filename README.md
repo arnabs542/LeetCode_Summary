@@ -2639,7 +2639,8 @@ key 存的是nums[i]， value 存的是出现的次数
   ```
  
 
-
+**202 Happy Number**
+First appraoch is to use brute force appraoch. Take all the squaresums of the digits and find if it equals to 1. Second approach is to use the HashSet to record if the next number ifs inside the hashset. 
 **406 Minimum size subarray sum**
 
 [2,3,1,2,4,3], s = 7
