@@ -4694,6 +4694,13 @@ BFS分层遍历与否的问题
 
 
 所以一个点BFS 出去的最短路经就是他的BFS 树形成 的层数
+**[Leetcode] 1102 Path With Maximum and Minimum Value**
+这题要求求出最小的score从所有从 左上角到右下角的路径，这里我想到的第一种方法就是DFS 求出所有路径, 但是我的implementation有问题，正确的DFS implementation 是将4个方向的直接for loop 一编； 但是这个solution是暴力求解，只能TLE。
+这个方法的时间复杂度是`O(4^V)` 空间复杂度是`O(V)`
+
+
+第二个方法就是用最大堆存储每一行的最大score和对应的索引位置，然后用BFS 搜索每一条路径，每次都找到`grid[new_x][new_y]`和`cur[2]`之间的最小值
+时间复杂度是`O(Vlog(V) + E)` 空间复杂度是`O(V)`
 
 **[Leetcode] 994. Rotting Oranges**
 Bfs 网格题，这里先将rotten orange 的位置放入到queue里，然后算fresh orange 的数量，然后就是BFS 四个方向搜索，然后每次先加rotten的数量，然后当遇到合法的fresh orange， 就将fresh orange的数量减一，最后判断fresh orange 的个数是否为0， 如果是0, 那么就返回rotten的count 减一，为什么要减一？Imagine you are doing BFS on a tree, starting from depth = 0, you do depth++ every level as you go down, adding child nodes into the queue, and when you reach the last level where all the nodes are null(for instance) you are still doing depth++. But essentially nulls are not required so you just do depth - 1 in the end and return. I hope you understood.
