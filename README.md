@@ -1596,7 +1596,7 @@ So in further inspection, for the most frequent word, the count is repeated as c
 
 
 
-Restore IP address
+**Restore IP address**
 DFS -- compute all possible valid ip
 Tips about the Valid IP address:
 Each subset would be in the range [0, 255]
@@ -1614,25 +1614,29 @@ Forth level → 3, 135, 35
  So the dfs process would be each time the substring from 0 to i + 1 (0 < i < s.length()), check if the level is smaller than 3 if yes → the prefix needs a ‘.’ if no → the prefix is already contains the ‘.’ 
 
 
-Merge two sorted arrays
+**Merge two sorted arrays**
 Use two pointers to compare the arrays elements
 And check if there are any elements got left from the two arrays;
 
-Maximum Subarray
+**Maximum Subarray**
+Divide and Conquer approach is O(NlogN)
+Greedy Approach is O(N)
 Input int[] nums, output: int maximum sum
 Algorithm:
+DP approach
 If we see the previous sum is already 0, we can turn that previous sum to be 0; else we can add current number to the previous sum’
 If we see the maximum is less than the previous sum, then we can replace the maximum with the previous sum; else we can keep the maximum
 
 Dynamic Programming 
+```
 Dp[i] -- max sum from 0 to i
 Dp[i] = (dp[i - 1] > 0) ? nums[i] + dp[i] : nums[i]
 
 Dp[0] = 0
 
 Finally find the max element of the 
-
-N-Queens
+```
+**N-Queens**
 Say the chess board is 4 by 4
 
 
