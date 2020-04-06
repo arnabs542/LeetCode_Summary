@@ -4568,8 +4568,37 @@ Flood Fill的输入就是一个普通的矩阵，与之相反，图中的DFS 或
 用DFS 或者叫Flood fill 可以帮助我们去实现这个遍历，从第一行、第一列开始遍历，用pac 的矩阵记录，然后从最后一行和最后一列用atl 矩阵做记录， 最后得到更新后的矩阵，算出当同一个节点都表示true的话，那么就把坐标加入到res List 中
 
 
-双指针 算法汇总
-Container with Most Water
+双指针 小结
+**Most Profit Assigning Work**
+这里我们用了很多方法，主要还是对于每一个worker 来说要找到符合要求的difficulty的task然后profit要比之前的大，这样比较能通过大部分的test case，除了
+最后一个，然后看答案，知道我们要先将 difficulty 和 profit 放到Point 或者 Pair 里面， 然后把这整个叫 `jobs`, 然后sort `worker`， sort `jobs`的时候要按照里面的difficulty 来进行从小到大的排列,
+然后我们对于每一个worker， 我们用一个指针`i`， 一个整数`best`来记录最大的收益，然后加入到答案里面
+
+```
+import java.awt.Point;
+
+class Solution {
+    public int maxProfitAssignment(int[] difficulty, int[] profit, int[] worker) {
+int N = difficulty.length;
+        Point[] jobs = new Point[N];
+        for (int i = 0; i < N; ++i)
+            jobs[i] = new Point(difficulty[i], profit[i]);
+        Arrays.sort(jobs, (a, b) -> a.x - b.x);
+        Arrays.sort(worker);
+
+        int ans = 0, i = 0, best = 0;
+        for (int skill: worker) {
+            while (i < N && skill >= jobs[i].x)
+                best = Math.max(best, jobs[i++].y);
+            ans += best;
+        }
+
+        return ans;
+    }
+}
+```
+
+**Container with Most Water**
 solution 1 bruteforce
 use two loops (0 <= i < heights.length, i + 1 <= j < heights.length)
 each loop the area is computed area = min(heights[i], heights[j]) * (j - i)
