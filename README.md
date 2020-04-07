@@ -1990,9 +1990,17 @@ Sqrt(x)
 ## 双指针 
 
 
-Window模板总结
+### 滑动窗口 算法总结
 题目概览
 滑动窗口这类问题一般需要用到双指针来进行求解，另外一类比较特殊则是需要用到特定的数据结构，像是 sorted_map。后者有特定的题型，后面会列出来，但是，对于前者，题形变化非常的大，一般都是基于字符串和数组的，所以我们重点总结这种基于双指针的滑动窗口问题。
+### 滑动窗口的主要思想是：你有右指针用来找合适的解，同时用来增大窗口；然后左指针用来缩短窗口，当遇到不合适的解的时候，然后我们就可以对左右指针区间进行答案的更新
+**904 Fruits in Basket**
+这里用滑动窗口，然后用HashMap 来记录`<Fruit Type, Encounter Number>` , `map.put(tree[right], map.getOrDefault(tree[right], 0) + 1)`这里合适的解就是只要HashMap的size 不超过2， 当size 超过2的时候，我们要减去左指针的encouter number，然后如果遇到左指针的encouter number是0的时候，我们直接移除对应的`tree[left]` 然后一直找左右指针的区间
+**487. Max Consecutive Ones II**
+滑动窗口，然后我们要将题目转化为"找到最长的连续1的区间"； 这里的flip number是至多1， 这里我们就是不需要真的flip 0到1， 直接用右指针往右走，这里只要遇到0的话，将flip的数字减一，遇到不合适的解，比如是当flip number 是小于0的时候，然后需要移动左指针，如果左指针是0的话，我们就往flip number 加1， 然后最后答案就是`right - left`
+
+**1004. Max Consecutive Ones III**
+滑动窗口，是487的follow up; 这里唯一的不同就是这里flip number 是至多K次。 然后我们要将题目转化为"找到最长的连续1的区间"； 这里我们就是不需要真的flip 0到1， 直接用右指针往右走，这里只要遇到0的话，将flip的数字 (K) 减一，遇到不合适的解，比如是当flip number 是小于0的时候，然后需要移动左指针，如果左指针是0的话，我们就往flip number 加1， 然后最后答案就是`right - left`
 
 题目问法大致有这几种：
 
