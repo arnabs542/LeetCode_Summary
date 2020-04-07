@@ -1994,6 +1994,139 @@ Sqrt(x)
 题目概览
 滑动窗口这类问题一般需要用到双指针来进行求解，另外一类比较特殊则是需要用到特定的数据结构，像是 sorted_map。后者有特定的题型，后面会列出来，但是，对于前者，题形变化非常的大，一般都是基于字符串和数组的，所以我们重点总结这种基于双指针的滑动窗口问题。
 ### 滑动窗口的主要思想是：你有右指针用来找合适的解，同时用来增大窗口；然后左指针用来缩短窗口，当遇到不合适的解的时候，然后我们就可以对左右指针区间进行答案的更新
+
+### 滑动窗口的典型例子：当遇到题目是要求某种符合条件的子数组`Subarrays`的个数的时候，滑动窗口就是最强的武器来用，因为时间复杂度是O(N), 空间复杂度是O(1),非常efficient
+
+### 对应上面的典型例子，只要求子数组的个数，我们可以用"At Most"思想来实现，也就是说，`子数组的个数 = at_Most(nums, Sum) - at_Most(nums, Sum - 1)` 这个子数组的个数是 子数组的个数 = 至多K个的子数组 个数 - 至多（K - 1）个的子数组 个数，下面就是这个`at_Most`的函数模板 (from LC #930)
+```
+class Solution {
+    public int numSubarraysWithSum(int[] A, int S) {
+        return atMost(A, S) - atMost(A, S - 1);
+    }
+    
+    private int atMost(int[] A, int S) {
+        if (S < 0) return 0;
+        
+        int right;
+        int left = 0;
+        int res = 0;
+        
+        for (right = 0; right < A.length; right++) {
+            S -= A[right];
+            while (S < 0) {
+                S += A[left];
+                left++;
+            }
+            
+            res += right - left + 1;
+        }
+        
+        return res;
+    }
+}
+```
+
+**930 Binary Subarrays with sum S**
+这里用`at Most`找至多Sum 的子数组个数与至多Sum-1的子数组个数的差， 结果如下
+```
+class Solution {
+    public int numSubarraysWithSum(int[] A, int S) {
+        return atMost(A, S) - atMost(A, S - 1);
+    }
+    
+    private int atMost(int[] A, int S) {
+        if (S < 0) return 0;
+        
+        int right;
+        int left = 0;
+        int res = 0;
+        
+        for (right = 0; right < A.length; right++) {
+            S -= A[right];
+            while (S < 0) {
+                S += A[left];
+                left++;
+            }
+            
+            res += right - left + 1;
+        }
+        
+        return res;
+    }
+}
+```
+**1248. Count Number of Nice Subarrays**
+题目定义nice subarray为所有独特的数字出现共K次为一个nice subarray，那么我们的至多函数的定义就是
+找出至多出现X次的独特数字的子数组的个数，然后用`子数组个数 = 至多K个子数组个数 - 至多K-1个子数组个数`
+如果数字是奇数那么数字余2为1，数字是偶数那么数字余2为0，利用这个特性，我们可以定义规则为
+`每次移动右指针，然后每次和K减去nums[right] % 2`
+`如果K 小于0， 那么让K加上nums[left] % 2，并且加上left`
+`最后让res 加上 right - left + 1`
+代码如下
+```
+class Solution {
+    public int numberOfSubarrays(int[] nums, int k) {
+        return atMost(nums, k) - atMost(nums, k - 1);
+    }
+    
+    private int atMost(int[] nums, int k) {
+        int l = 0;
+        int r;
+        
+        int res = 0;
+        
+        for (r = 0; r < nums.length; r++) {
+            k -= nums[r] % 2;
+            while (k < 0) {
+                k += nums[l] % 2;
+                l++;
+            }
+            res += r - l + 1;
+        }
+        
+        return res;
+    }
+}
+```
+**992. Subarrays with K Different Integers**
+这里还是用 至多条件，规则就是每次
+这里我们在至多函数中需要一个数组map来记录这个数字有没有见到过，如果见到过，那么就把K减去1
+`移动右指针 -> 增长map[nums[right]] -> 如果map[nums[right]]为1，说明数字已经遇到过，那么就把K减去1`
+`当K 小于 0 -> 减少map[nums[left]] -> 如果map[nums[left]] 为0， 那么数字就没见过，把K加回1`
+`不断将 right - left + 1 加入到res`
+```
+class Solution {
+    public int subarraysWithKDistinct(int[] A, int K) {
+        return atMost(A, K) - atMost(A, K - 1);
+    }
+    
+    private int atMost(int[] nums, int k) {
+        int r;
+        int l = 0;
+        int n = nums.length;
+        int[] map = new int[n + 1];
+        int res = 0;
+        
+        for (r = 0; r < n; r++) {
+            map[nums[r]]++;
+            if (map[nums[r]] == 1) {// already meet  number
+                k--;
+            }
+            
+            while (k < 0) {
+                map[nums[l]]--;
+                if (map[nums[l]] == 0) {// meet new number
+                    k++;
+                }
+                l++;
+            }
+            res += r - l + 1;
+        }
+        
+        return res;
+    }
+}
+```
 **904 Fruits in Basket**
 这里用滑动窗口，然后用HashMap 来记录`<Fruit Type, Encounter Number>` , `map.put(tree[right], map.getOrDefault(tree[right], 0) + 1)`这里合适的解就是只要HashMap的size 不超过2， 当size 超过2的时候，我们要减去左指针的encouter number，然后如果遇到左指针的encouter number是0的时候，我们直接移除对应的`tree[left]` 然后一直找左右指针的区间
 **487. Max Consecutive Ones II**
