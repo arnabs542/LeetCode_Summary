@@ -2145,6 +2145,156 @@ class Solution {
 含有少于 k 个不同字符的最长子串
 所有字符都只出现一次的最长子串
 ...
+
+**209. Minimum Size Subarray Sum**
+这题用滑动窗口，`右指针往右-> 增加prefixSum`
+`当prefixSum 大于或等于Sum的时候 -> 滑动左指针 -> prefixSum 减去左指针指的数字`
+``
+class Solution {
+    public int minSubArrayLen(int s, int[] nums) {
+        int r;
+        int l = 0;
+        int res = Integer.MAX_VALUE;
+        int prefixSum = 0;
+        
+        if (findSum(nums) < s) return 0;
+        
+        for (r = 0; r < nums.length; r++) {
+            prefixSum += nums[r];
+            while (prefixSum >= s) {
+                res = Math.min(res, r - l + 1);
+                prefixSum -= nums[l];
+                l++;
+            }
+        }
+        
+        return res;
+    }
+    private int findSum(int[] nums) {
+        int res = 0;
+        for (int n : nums) {
+            res += n;
+        }
+        
+        return res;
+    }
+}
+
+``
+
+**862. Shortest Subarray with Sum at Least K**
+Follow Up from LC # 209, introduce negatives to the array
+Brute Force Implementation：
+先计算prefixSum 数组，然后每一个i 从1 到N的index，往左移动j指针来找`PrefixSum[i]`和`PrefixSum[j]`的差，也就是原数组的从i到j的和如果大于等于Sum的话，就答案更新, 时间复杂度O（N^2) 空间O（N） (TLE, but it's a good start)
+
+``
+class Solution {
+    public int shortestSubarray(int[] nums, int K) {
+        int N = nums.length;
+        
+        int[] P = new int[N + 1];
+        
+        for (int i = 0; i < nums.length; i++) {
+            P[i + 1] = P[i] + nums[i];
+        }
+        
+        int res = Integer.MAX_VALUE;
+        
+        for (int i = 1; i < N + 1; i++) {
+            for (int j = i - 1; j >= 0; j--) {
+                if (P[i] - P[j] >= K) {
+                    res = Math.min(res, i - j);
+                }
+            }
+        }
+        
+        return res == Integer.MAX_VALUE ? -1 : res;
+    }
+}
+``
+
+第二个是用单调递增队列，deque, Credit to @lee215's leetcode answer for this answer
+``
+Explanation
+Calculate prefix sum B of list A.
+B[j] - B[i] represents the sum of subarray A[i] ~ A[j-1]
+Deque d will keep indexes of increasing B[i].
+For every B[i], we will compare B[i] - B[d[0]] with K.
+
+
+Complexity:
+Every index will be pushed exactly once.
+Every index will be popped at most once.
+
+Time O(N)
+Space O(N)
+
+
+How to think of such solutions?
+Basic idea, for array starting at every A[i], find the shortest one with sum at leat K.
+In my solution, for B[i], find the smallest j that B[j] - B[i] >= K.
+Keep this in mind for understanding two while loops.
+
+
+What is the purpose of first while loop?
+For the current prefix sum B[i], it covers all subarray ending at A[i-1].
+We want know if there is a subarray, which starts from an index, ends at A[i-1] and has at least sum K.
+So we start to compare B[i] with the smallest prefix sum in our deque, which is B[D[0]], hoping that [i] - B[d[0]] >= K.
+So if B[i] - B[d[0]] >= K, we can update our result res = min(res, i - d.popleft()).
+The while loop helps compare one by one, until this condition isn't valid anymore.
+
+
+Why we pop left in the first while loop?
+This the most tricky part that improve my solution to get only O(N).
+D[0] exists in our deque, it means that before B[i], we didn't find a subarray whose sum at least K.
+B[i] is the first prefix sum that valid this condition.
+In other words, A[D[0]] ~ A[i-1] is the shortest subarray starting at A[D[0]] with sum at least K.
+We have already find it for A[D[0]] and it can't be shorter, so we can drop it from our deque.
+
+
+What is the purpose of second while loop?
+To keep B[D[i]] increasing in the deque.
+
+
+Why keep the deque increase?
+If B[i] <= B[d.back()] and moreover we already know that i > d.back(), it means that compared with d.back(),
+B[i] can help us make the subarray length shorter and sum bigger. So no need to keep d.back() in our deque.
+More detail
+B[d.back] <- B[i] <- ... <- B[future id]
+B[future id] - B[d.back()] >= k && B[d.back()] >= B[i]
+B[future id] - B[i] >= k too
+``
+
+code 
+``
+class Solution {
+    public int shortestSubarray(int[] nums, int K) {
+        int N = nums.length;
+        
+        int[] P = new int[N + 1];
+        
+        for (int i = 0; i < nums.length; i++) {
+            P[i + 1] = P[i] + nums[i];
+        }
+        Deque<Integer> deque = new ArrayDeque<>();
+        int res = Integer.MAX_VALUE;
+        
+        for (int i = 0; i < N + 1; i++) {
+            while (!deque.isEmpty() && P[i] - P[deque.getFirst()] >= K) {
+                res = Math.min(res, i - deque.pollFirst());
+            }
+            
+            while (!deque.isEmpty() && P[i] <= P[deque.getLast()]) {
+                deque.pollLast();
+            }
+            deque.addLast(i);
+        }
+        
+        return res == Integer.MAX_VALUE ? -1 : res;
+    }
+}
+``
+
 除此之外，还有一些其他的问法，但是不变的是，这类题目脱离不开主串（主数组）和子串（子数组）的关系，要求的时间复杂度往往是 O(n)，空间复杂度往往是常数级的。之所以是滑动窗口，是因为，遍历的时候，两个指针一前一后夹着的子串（子数组）类似一个窗口，这个窗口大小和范围会随着前后指针的移动发生变化。
 
 
