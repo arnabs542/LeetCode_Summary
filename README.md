@@ -2748,6 +2748,93 @@ ans =2 exit since t = target.length()
         return j == x.length();
     }
  ```
+ ## One Pass/ Two Pass 问题，核心是从左往右扫一遍 + 从右往左扫一遍
+ 例题
+ **845. Longest Mountain in Array**
+ 最普通的办法是找到所有peaks，然后从这个peaks 先往左扫，更新答案区间，然后往右扫，更新答案区间，最后返回答案
+ ```
+ class Solution {
+    public int longestMountain(int[] A) {
+        if (A.length < 3) return 0;
+        List<Integer> mountains = new ArrayList<>();
+        for (int i = 1; i < A.length - 1; i++) {
+            if (A[i - 1] < A[i] && A[i] > A[i + 1]) {
+                mountains.add(i);
+            }
+            
+        }
+        
+        if (mountains.isEmpty()) return 0;
+        
+        int res = Integer.MIN_VALUE;
+        
+        for (int index : mountains) {
+            int curLen = 1;
+            int j = index;
+            // move towards left, increasing subarray
+            while (j > 0 && A[j] > A[j - 1]) {
+                j--;
+            }
+            curLen += (index - j);
+            
+            j = index;
+            // move towards right, decreasing array
+            while (j < A.length - 1 && A[j] > A[j + 1]) {
+                j++;
+            }
+            curLen += (j - index);
+            
+            res = Math.max(res, curLen);
+        }
+        
+        
+        return res == Integer.MIN_VALUE ? 0 : res;
+    }
+}
+ ```
+ 
+ 或者我们用Two Pass的思想，先第一个pass从右往左扫一次找downhill的每个点的长度，然后第二个pass从左往右扫uphill的每一个点的长度
+ 这两个pass的关系如下
+ ```
+ up[i] = up[i + 1] + 1 if nums[i - 1] < nums[i]
+ 
+ down[i] = down[i + 1] + 1 if nums[i + 1] < nums[i]
+ ```
+ 最后一个pass 是更新区间，关系是
+ ```
+ res = max(res, up[i] + down[i] + 1) if up[i] > 0 and down[i] > 0
+ ```
+ 代码
+ ```
+ class Solution {
+    public int longestMountain(int[] nums) {
+        int N = nums.length;
+        
+        int[] up = new int[N], down = new int[N];
+        
+        for (int i = N - 2; i >= 0; i--) {
+            if (nums[i] > nums[i + 1]) {
+                down[i] = down[i + 1] + 1;
+            }
+            
+        }
+        int res = Integer.MIN_VALUE;
+        for (int i = 0; i < N; i++) {
+            if (i > 0 && nums[i] > nums[i - 1]) {
+                up[i] = up[i - 1] + 1;
+                if (up[i] > 0 && down[i] > 0) res = Math.max(res, up[i] + down[i] + 1);
+            }
+        }
+        
+        return res == Integer.MIN_VALUE ? 0 : res;
+    }
+}
+ ```
+ 
+ 
+ **881. Boats to Save People**
+ 
+ 
  **K-diff Pairs in Array**
  这里找到k-difference pairs 这里 k-difference 的定义是差的绝对值， 我们先要将这个数组排序，这里我们的可以用一个HashMap 来记录所有达标的`Unique pairs` 最后返回这个HashMap的size就可以
  ```
