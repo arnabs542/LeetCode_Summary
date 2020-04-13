@@ -1989,6 +1989,36 @@ Sqrt(x)
 
 ## 双指针 
 
+**838. Push Dominoes**
+```
+We can calculate the net force applied on every domino. The forces we care about are how close a domino is to a leftward 'R', and to a rightward 'L': the closer we are, the stronger the force.We can calculate the net force applied on every domino. The forces we care about are how close a domino is to a leftward 'R', and to a rightward 'L': the closer we are, the stronger the force.
+
+Scanning from left to right, our force decays by 1 every iteration, and resets to N if we meet an 'R', so that force[i] is higher (than force[j]) if and only if dominoes[i] is closer (looking leftward) to 'R' (than dominoes[j]).
+
+Similarly, scanning from right to left, we can find the force going rightward (closeness to 'L').
+
+For some domino answer[i], if the forces are equal, then the answer is '.'. Otherwise, the answer is implied by whichever force is stronger.
+```
+
+**828. Count Unique Characters of All Substrings of a Given String**
+
+```
+In each loop, We caculate cur[i], which represent the sum of Uniq() for all substrings whose last char is S.charAt(i).
+
+For example,
+S = 'ABCBD'
+When i = 2, cur[2] = Uniq('ABC') + Uniq('BC') + Uniq('C')
+When i = 3, cur[3] = Uniq('ABCB') + Uniq('BCB') + Uniq('CB') + Uniq('B')
+
+Notice, we append char 'B' into each previous substrings. Only in substrings 'CB' and 'B', the char 'B' can be identified as uniq. The contribution of 'B' from cur[2] to cur[3] is i - showLastPosition['B']. At the same time, in substrings 'ABCB', 'BCB', the char 'B' can‘t’ be identified as uniq any more, the previous contribution of 'B' should be removed.
+
+So we have'cur[i] = cur[i - 1] - contribution[S.charAt(i)] + (i - showLastPosition[S.charAt(i)])
+Then the new contribution[S.charAt(i)] = i - showLastPosition[S.charAt(i)]
+
+The final result is the sum of all cur[i].
+```
+
+
 
 ### 滑动窗口 算法总结
 题目概览
@@ -6235,10 +6265,13 @@ Thus each point reaches one more hop to the neighbor. And eventually reaches the
     }
 ```
 
-## PriorityQueue 小结
+## PriorityQueue 堆小结
+
 如果你想找到第K大的值，你用小根堆， 如果你想找第K小的值，你用大根堆， 因为小根堆是先把小的poll 出去，最后只会剩下大的元素； 大根堆与之相反，它会先将大的poll出去，最后只会剩下小的元素
 但是你也可以反过来想，如果对小根堆只加入k次元素的话，那么这时小根堆就是储存从小到大的k个元素
 
+**1046. Last Stone Weight**
+使用一个最大堆来做，当`first = maxHeap.poll()`和`second = maxHeap.poll()`不相等的话，就算出差然后放回到最大堆里面，最后如果最大堆还剩1个，就返回，如果没有就返回0
 
 **Rearrange String k Distance Apart**
 这里我们看例子得到一个信息就是，最高频的总是排在前面的，然后第二高频，第三高频...
