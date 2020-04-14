@@ -6690,13 +6690,56 @@ Use a priority queue to store {dist, worker index, and bike index} and use compa
 
 
 
-DP小结
+## DP小结
 怎么样去得到DP的解？
 考虑最后一步来想状态， 很想数学上的数列问题，
 
+**Leetcode 53 Maximum Subarray Sum**
+
+```
+Think about  the prefix sum and
+subarray sum relationship
+if the PrefixSum[i] - PrefixSum[k], where k is smaller than i
+is the maximum subarray sum,
+meaning the PrefixSum[k] must be the smallest
+so we can update the minSum if sum is smaller than minSum
+than if we check sum - minSum is bigger than the maxSum
+update the maxSum
+Note we need to handle the all negatives situation
+since the code can't handle the case:;
+the minSum will always equal to the sum
+```
+
+
+**Leetcode 5 Longest Palindrome Substring**
+
+```
+This requires me to think not the substring itself
+but the larger portion of the substring
+think of it like "if the larger substring that include
+the substring is palindrome, then we could determine the 
+smaller substring is also palindrome"
+
+Inherited from the idea above
+we have a boolean[][] array 
+indicating S[i][j] is palindrome or not
+
+then we have two situations
+One is the base case
+where right - left <= 2
+then we  could set the matrix element to true
+
+other wise we set the 
+dp[l][r] = dp[l + 1][r - 1], which is the larger
+portion
+and due to this effect, the left
+has to start from the end and push backward to the beginning of the word
+while the right is pushi to the right
+```
 
 ---序列型DP---
-Leetcode 357 Count all unique numbers from digits
+**Leetcode 357 Count all unique numbers from digits**
+```
 This is a digit combination problem. Can be solved in at most 10 loops.
 When n == 0, return 1. I got this answer from the test case.
 When n == 1, _ can put 10 digit in the only position. [0, ... , 10]. Answer is 10.
@@ -6707,13 +6750,16 @@ When n == 4, _ _ _ _ total choice is 9 * 9 * 8 * 7.
 When n == 10, _ _ _ _ _ _ _ _ _ _ total choice is 9 * 9 * 8 * 7 * 6 * 5 * 4 * 3 * 2 * 1
 When n == 11, _ _ _ _ _ _ _ _ _ _ _ total choice is 9 * 9 * 8 * 7 * 6 * 5 * 4 * 3 * 2 * 1 * 0 = 0
  
-
-Longest Increasing Subsequence
+```
+**Longest Increasing Subsequence**
+```
 dp[i] means the LIS length ends with i, 
 dp[i] = max(dp[i], dp[j] + 1)  0 <= j < i, if nums[i] > nums[j] 
 dp[0] = 1
+```
 
-Jump Game
+**Jump Game**
+```
 dp = boolean[nums.length]
 dp[i] whether can we jump to i position
 dp[i] = true if dp[j] is true and nums[j] > i - j
@@ -6726,7 +6772,10 @@ dp[j] -> dp[i]: if dp[j] is reachable (dp[j] + 1 < dp[i]) and nums[j] >= i - j
 dp[i] = dp[j] + 1
 
 return dp[nums.length - 1]
-494 Target Sum
+```
+
+**494 Target Sum**
+```
 跟314 有点像，全部加上正数，sum就是+sum, 全部加上负数， sum 就是-sum 
 -sum                  0                     +sum
 转移坐标轴之后就是
@@ -6767,6 +6816,7 @@ i + 1: j, j + 1
 因为从上往下扫是不能找到这个结果的
 还有一个规律是最后一层的元素个数跟这个dp 的长度是一样的
 
+```
 
 ---坐标型DP/网格DP---
 Maximum Squares
