@@ -7068,7 +7068,8 @@ dp[i][0] = true (0 <= i <= stones.length)
 return S - 2 * S2
  
  
-322 Coin Change
+**322 Coin Change**
+```
 01 背包问题 — 
  
 我们这里要找到最小的coin 的使用数去凑一个值，
@@ -7083,6 +7084,7 @@ dp[i] = min(dp[i], dp[i - coins[j]] + 1) |  1 <= i < amount, 0 <= j < coins.leng
 当我们将每一个dp格子设成amount + 1， 除了dp[0], 代表了没有价值有多少种硬币？ 有1中方式就是没有硬币， 
 边界条件
 判断dp[amount] 是否大于amount; 如果是就直接返回-1， 如果不是就返回dp[amount]
+```
 518. Coin Change 2
 377 Combination Sum IV
 474 Ones and Zeros
