@@ -2018,7 +2018,86 @@ Then the new contribution[S.charAt(i)] = i - showLastPosition[S.charAt(i)]
 The final result is the sum of all cur[i].
 ```
 
+**双指针 前缀和**
 
+**523. Continuous Subarray Sum**
+Use prefix sum 
+
+```
+class Solution {
+    public boolean checkSubarraySum(int[] nums, int k) {
+        
+        int[] P = new int[nums.length + 1];
+        int n = P.length;
+        
+        for (int i = 1; i < n; i++) {
+            P[i] = P[i - 1] + nums[i - 1];
+        }
+        
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i + 2; j <= nums.length; j++) {
+                if (k == 0) {
+                    if (P[j] - P[i] == 0) return true;
+                } else if ((P[j] - P[i]) % k == 0) return true; 
+            }
+        }
+        
+        return false;
+    }
+}
+```
+
+**974. Subarray Sums Divisible by K**
+
+Use prefix sum 
+but use reminder theorem
+to prevent negative
+
+```
+sum = (sum + nums[i] % K + K) % K;
+```
+
+```
+class Solution {
+    public int subarraysDivByK(int[] nums, int K) {
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+        int sum = 0;
+        int res = 0;
+        for (int i = 0; i < nums.length; i++) {
+            sum = (sum + nums[i] % K + K) % K;
+            res += map.getOrDefault(sum, 0);
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+        
+        return res;
+    }
+}
+```
+
+
+**560. Subarray Sum Equals K**
+Use prefix sum as Brute Force
+
+```
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        int[] prefixSum = new int[nums.length + 1];
+        for (int i = 1; i < prefixSum.length; i++) {
+            prefixSum[i] = prefixSum[i - 1] + nums[i - 1];
+        }
+        int res = 0;
+        for (int i = 0; i < prefixSum.length - 1; i++) {
+            
+            for (int j = i + 1; j < prefixSum.length; j++) {
+                if (prefixSum[j] - prefixSum[i] == k) res++;
+            }
+        }
+        
+        return res;
+    }
+}
+```
 
 ### 滑动窗口 算法总结
 题目概览
@@ -2055,6 +2134,8 @@ class Solution {
     }
 }
 ```
+
+
 
 **930 Binary Subarrays with sum S**
 这里用`at Most`找至多Sum 的子数组个数与至多Sum-1的子数组个数的差， 结果如下
