@@ -1328,7 +1328,54 @@ Throw new IllegalArgumentException();
 }
 
 ----------------------------------------------------------------------
-Dynamics Programming
+## 动态规划总结 Dynamics Programming
+一般动态规划做法就是为了省时间，而用一个数组或者Hashmap来记录中间的值，所以不用重复计算中间的，最重要的DP特性是重复子问题，也就是说，这个问题的结果可以从上一层的结果中套用
+状态的定义，和状态的转移方程非常重要，而且这个可以从递归的角度出发，来想
+
+而动态规划有两种方式来做，一个方式是非递归的，也就是从下到上的DP，还有的方式是从上到下的方式，这个是递归的，这个叫记忆化搜索，一般这个方式比较好写
+
+记忆化搜索模板
+
+```
+Integer[][] dp
+public int main(int[][] maze) {
+  // initialize dp array
+  dp = new Integer[maze.length][maze[0].length];
+  
+  // use recursion to find the answer
+  return memo(0, 0, maze);
+}
+
+private int memo(int i, int j, int[][] maze) {
+  // base case it could be out of bound check or reach to the bottom right check
+  if base_case(i, j, maze) return 0; // since already out of bound / reached bottom right would be 0 solutions
+  
+  // if intermediate results are stored in dp array, meaning the result is the final answer, return it and save trunks of time
+  if (dp[i][j] != null) return dp[i][j];
+  
+  // initialize an final result
+  int finalRes = 0;
+ 
+  // check possible directions, in maze, particular direction is from previous up and right direction to get to the current position
+  // so need to check the direction, sometimes you may also need to consider the point at upper-left 
+  
+  int up = memo(i - 1, j, maze);
+  int left = memo(i, j - 1, maze);
+  
+  // int upperLeft = memo(i - 1, j - 1, maze);
+  
+  // update the finalRes with the three results from previous directions
+  finalRes = update(finalRes, up, left, upperLeft);
+  
+  // save the updated result to the dp array
+  dp[i][j] = finalRes;
+  
+  return finalRes;
+}
+```
+
+一般来说，这种记忆化搜索跟自下而上的dp一样的时间
+
 Best time to buy and sell stocks
 Dp[i]: the maximum profit for the day i 
 Substructure: if want to find the best time for i-th day, so it could find the best time for ith - 1 day. 
